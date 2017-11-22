@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1054567450448",
+    "firebase_url": "https://dogapp-8bfb0.firebaseio.com",
+    "project_id": "dogapp-8bfb0",
+    "storage_bucket": "dogapp-8bfb0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054567450448:android:cbb7f2bdc666b4f2",
+        "android_client_info": {
+          "package_name": "com.example.gabby.dogapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054567450448-2gfab0lldvcbnemssi4qtehrq35a0mn5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm6JmDqMeBp7t93QEt6A4g1KXFWVuLBLg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
