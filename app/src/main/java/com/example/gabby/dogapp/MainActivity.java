@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //show progressbar
         progressDialog.setMessage("Registering User...");
         progressDialog.show();
-
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
