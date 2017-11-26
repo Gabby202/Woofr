@@ -5,7 +5,7 @@ package com.example.gabby.dogapp;
  */
 
 public class UserInformation {
-
+    //set variables you want to store for each user
     public String username;
     public String address;
 
