@@ -19,8 +19,6 @@ public class EditProfileActivity extends AppCompatActivity {
     /*==================== Declare local variables to reference layout items ==============*/
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
-    private TextView userEmailTextView;
-    private Button logoutButton;
     private EditText usernameEditText;
     private  EditText addressEditText;
     private  Button saveButton;
@@ -47,24 +45,9 @@ public class EditProfileActivity extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         /*======================= reference layout items with local variabbles =================*/
-        userEmailTextView = (TextView) findViewById(R.id.userEmailTextView);
-        userEmailTextView.setText("Welcome " + user.getEmail());
-        logoutButton = (Button) findViewById(R.id.logoutButton);
         usernameEditText = (EditText) findViewById(R.id.userNameEditText);
         addressEditText = (EditText) findViewById(R.id.addressEditText);
         saveButton = (Button) findViewById(R.id.saveButton);
-
-        //anonymous user of onClick function (means we dont have to implement it with the class
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(view == logoutButton) {
-                    firebaseAuth.signOut();
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                }
-            }
-        });
 
         //set listener on savebutton to call method
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +55,8 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(view == saveButton) {
                     saveUserInformation();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                 }
             }
         });

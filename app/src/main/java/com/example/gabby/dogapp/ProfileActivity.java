@@ -1,6 +1,8 @@
 package com.example.gabby.dogapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //========================== Firebase stuff ===========================================
     private FirebaseAuth firebaseAuth;
@@ -23,9 +25,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
+    private NavigationView nav_logout;
+    private NavigationView nav_settings;
 
     //variable delcarations
-
     private TextView welcomeTextView;
 
     @Override
@@ -43,15 +46,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-        //==================================side bar stuff ====================================
+        //==================================Nav bar stuff ====================================
         toolbar = (Toolbar) findViewById(R.id.nav_action);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        nav_logout = (NavigationView) findViewById(R.id.nv1);
+        nav_logout.setNavigationItemSelectedListener(this);
+
+        nav_settings = (NavigationView) findViewById(R.id.nv1);
+        nav_settings.setNavigationItemSelectedListener(this);
 
         //==================================== Variable Stuff ===============================================
 
@@ -69,10 +77,21 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void onClick(View view) {
-        //put onclick events here
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch(item.getItemId()) {
+            case(R.id.nav_logout):
+                firebaseAuth.signOut();
+                finish();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                break;
+
+            case(R.id.nav_settings):
+                finish();
+                startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+        }
+        return true;
+
     }
-
-
 }
 
