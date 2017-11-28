@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.example.gabby.dogapp.ProfileActivity">
 
 
     <TextView
+
         android:id="@+id/userEmailTextView"
         android:layout_width="196dp"
         android:layout_height="71dp"
@@ -90,5 +92,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addressEditText"
         app:layout_constraintVertical_bias="1.0" />
+
 
 </android.support.constraint.ConstraintLayout>

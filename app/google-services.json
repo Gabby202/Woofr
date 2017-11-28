@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1054567450448-h18uf4fkhbvmgihpblvm6if1q8tv6ceh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gabby.dogapp",
+            "certificate_hash": "68e8e25d29b4397157614cb660a504333695a6ef"
+          }
+        },
+        {
           "client_id": "1054567450448-2gfab0lldvcbnemssi4qtehrq35a0mn5.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1054567450448-2gfab0lldvcbnemssi4qtehrq35a0mn5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

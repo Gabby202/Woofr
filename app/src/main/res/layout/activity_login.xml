@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#333333"
     tools:context="com.example.gabby.dogapp.LoginActivity">
 
     <EditText
@@ -16,6 +17,8 @@
         android:ems="10"
         android:hint="Please Enter Email"
         android:inputType="textEmailAddress"
+        android:textColor="#ffffff"
+        android:textColorHint="#808080"
         app:layout_constraintBottom_toTopOf="@+id/passwordEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
@@ -31,6 +34,8 @@
         android:ems="10"
         android:hint="Please Enter Password"
         android:inputType="textPassword"
+        android:textColor="#ffffff"
+        android:textColorHint="#808080"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
@@ -44,6 +49,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="Login"
+        android:textColor="#ffffff"
+        android:background="#a30041"
         app:layout_constraintBottom_toTopOf="@+id/registerTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -58,6 +65,7 @@
         android:layout_marginTop="8dp"
         android:text="Don't have an account? Sign up here!"
         android:textSize="18sp"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,6 +83,7 @@
         android:text="User Login"
         android:textAlignment="center"
         android:textSize="30sp"
+        android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,13 +97,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:layout_constraintVertical_bias="0.446"
-        app:srcCompat="@drawable/paw" />
+        app:srcCompat="@drawable/pawwhite" />
 
 
 </android.support.constraint.ConstraintLayout>

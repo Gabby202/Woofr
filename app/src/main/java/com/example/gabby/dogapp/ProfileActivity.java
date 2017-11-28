@@ -33,6 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
         //get firebase authentication object so we can use the methods
         //get firebase database
         firebaseAuth = FirebaseAuth.getInstance();
