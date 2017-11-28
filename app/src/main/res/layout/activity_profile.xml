@@ -17,13 +17,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="38dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/welcomeTextView"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:layout_gravity="center_horizontal"
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24dp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="101dp" />
 
     </LinearLayout>
 
