@@ -41,7 +41,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(firebaseAuth.getCurrentUser() != null) {
             //start profile activity
             finish();
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            //just testing new activity, remove when done
+            startActivity(new Intent(getApplicationContext(), NavDrawer.class));
         }
 
         /*================== Assign local variables to reference layout items ===============*/
