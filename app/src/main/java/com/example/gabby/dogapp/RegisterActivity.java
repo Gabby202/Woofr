@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
 
     /*=========== Declare local variables that will reference layout items =========*/
     private Button registerButton;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
         //get firebase authentication object
         firebaseAuth = FirebaseAuth.getInstance();
@@ -40,10 +39,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //if user has logged in before and not logged out, go straight to profile page
         if(firebaseAuth.getCurrentUser() != null) {
             //start profile activity
-            finish();
-            //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            //finish();
+            //startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
             //just testing new activity, remove when done
-            startActivity(new Intent(getApplicationContext(), NavDrawer.class));
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
         /*================== Assign local variables to reference layout items ===============*/
@@ -127,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }else {
 
                             //else display popup
-                            Toast.makeText(MainActivity.this, "Could not register... Please try again", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Could not register... Please try again", Toast.LENGTH_SHORT).show();
 
                         }
 

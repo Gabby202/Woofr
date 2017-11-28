@@ -95,8 +95,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if(view == registerTextView) {
             finish(); //closes activity
-            //changes to MainActivity
-            startActivity(new Intent(this, MainActivity.class));
+            //changes to RegisterActivity
+            startActivity(new Intent(this, RegisterActivity.class));
         }
     }
 }
