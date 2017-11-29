@@ -40,9 +40,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(firebaseAuth.getCurrentUser() != null) {
             //start profile activity
             //finish();
-            //startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), DisplayProfileActivity.class));
             //just testing new activity, remove when done
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            //startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
 
         /*================== Assign local variables to reference layout items ===============*/
@@ -121,7 +121,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         if(task.isSuccessful()) {
                             //start profile activity
                             finish();
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            startActivity(new Intent(getApplicationContext(), UserDetailsActivity.class));
 
                         }else {
 
@@ -134,6 +134,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         progressDialog.dismiss();
                     }
                 });
+
+
     }
 
 }

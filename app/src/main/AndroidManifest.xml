@@ -25,7 +25,9 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".UserDetailsActivity" />
+        <activity android:name=".DisplayProfileActivity"></activity>
     </application>
 
 </manifest>
