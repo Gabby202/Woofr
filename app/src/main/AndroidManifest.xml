@@ -27,7 +27,8 @@
         <activity android:name=".EditProfileActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".UserDetailsActivity" />
-        <activity android:name=".DisplayProfileActivity"></activity>
+        <activity android:name=".DisplayProfileActivity" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
