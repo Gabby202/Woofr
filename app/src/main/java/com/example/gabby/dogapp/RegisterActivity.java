@@ -41,9 +41,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if(firebaseAuth.getCurrentUser() != null) {
             //start profile activity
             //finish();
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            //startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             //just testing new activity, remove when done
-            //startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
         /*================== Assign local variables to reference layout items ===============*/

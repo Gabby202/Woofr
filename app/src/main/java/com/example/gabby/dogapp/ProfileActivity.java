@@ -28,6 +28,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private NavigationView nav_logout;
     private NavigationView nav_settings;
     private NavigationView nav_account;
+    private NavigationView nav_home;
+
 
     //variable delcarations
     private TextView welcomeTextView;
@@ -61,6 +63,9 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         nav_settings = (NavigationView) findViewById(R.id.nv1);
         nav_settings.setNavigationItemSelectedListener(this);
+
+        nav_home = (NavigationView) findViewById(R.id.nv1);
+        nav_home.setNavigationItemSelectedListener(this);
 
         //==================================== Variable Stuff ===============================================
 
@@ -96,6 +101,11 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             case(R.id.nav_account):
                 finish();
                 startActivity(new Intent(getApplicationContext(), DisplayProfileActivity.class));
+                break;
+
+            case(R.id.nav_home):
+                finish();
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         }
         return true;
 
