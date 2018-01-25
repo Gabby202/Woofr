@@ -76,5 +76,7 @@ public class EditProfileActivity extends AppCompatActivity {
         databaseReference.child(user.getUid()).setValue(userInformation);
         //success popup
         Toast.makeText(this, "Information Saved!", Toast.LENGTH_LONG).show();
+
+        
     }
 }

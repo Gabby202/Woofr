@@ -26,6 +26,7 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
         String[] user =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         textView = (TextView) view.findViewById(R.id.textView2);
