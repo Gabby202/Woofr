@@ -23,7 +23,7 @@ import java.util.Map;
 
 
 public class UsersFragment extends android.support.v4.app.Fragment {
-    TextView textView;
+    TextView textViewName, textViewBio, textViewAddress, textViewPhone;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     public UsersFragment() {
@@ -46,7 +46,12 @@ public class UsersFragment extends android.support.v4.app.Fragment {
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
                 System.out.println("Name: " + newPost.get("name"));
-                textView.setText("User " + newPost.get("name"));
+                textViewName.setText("User " + newPost.get("name"));
+                textViewBio.setText("User " + newPost.get("bio"));
+                textViewAddress.setText("User " + newPost.get("address"));
+                textViewPhone.setText("User " + newPost.get("phone"));
+
+
 
             }
 
@@ -77,7 +82,11 @@ public class UsersFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         String[] users =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
         View view = inflater.inflate(R.layout.fragment_users, container, false);
-        textView = (TextView) view.findViewById(R.id.textView2);
+        textViewName = (TextView) view.findViewById(R.id.textViewName);
+        textViewBio = (TextView) view.findViewById(R.id.textViewBio);
+        textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
+        textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -91,19 +100,28 @@ public class UsersFragment extends android.support.v4.app.Fragment {
 
 
                 String[] names = new String[10];
-                String[] bio= new String[10];
+                String[] bios= new String[10];
+                String[] addresses= new String[10];
+                String[] phones= new String[10];
                 int x = 0;
                 for (DataSnapshot user : usersChildren) {
 
                     names[x]= user.child("name").getValue().toString();
-                    bio[x]=user.child("bio").getValue().toString();
+                    bios[x]=user.child("bio").getValue().toString();
+                    addresses[x]=user.child("address").getValue().toString();
+                    phones[x]=user.child("phone").getValue().toString();
+
                     System.out.println(names[x] + "this is the array shit");
 
                     x++;
 
                 }
 
-                textView.setText(names[i-1]+ " "+bio[i-1]);
+                textViewName.setText(names[i-1]);
+                textViewBio.setText(bios[i-1]);
+                textViewAddress.setText(addresses[i-1]);
+                textViewPhone.setText(phones[i-1]);
+
 
 
 
