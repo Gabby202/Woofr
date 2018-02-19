@@ -33,7 +33,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
 
     //Firebase
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageReference = storage.getReference();;
+    StorageReference storageReference = storage.getReference();
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
 
@@ -119,7 +119,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
             progressDialog.show();
             FirebaseUser user = firebaseAuth.getCurrentUser();
 
-            StorageReference ref = storageReference.child("images/"+ user.getUid().toString()+"/"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images/"+ user.getUid().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

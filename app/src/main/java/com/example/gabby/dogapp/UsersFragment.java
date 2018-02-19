@@ -1,6 +1,7 @@
 package com.example.gabby.dogapp;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,13 +21,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 import java.util.Map;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
 
 
 public class UsersFragment extends android.support.v4.app.Fragment {
     TextView textViewName, textViewBio, textViewAddress, textViewPhone;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
+    private FirebaseStorage storage;
+    private ImageView imageView;
     public UsersFragment() {
         // Required empty public constructor
 
@@ -38,6 +46,7 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storage = FirebaseStorage.getInstance();
 
         // Retrieve new posts as they are added to Firebase
         databaseReference.addChildEventListener(new ChildEventListener() {
@@ -80,12 +89,13 @@ public class UsersFragment extends android.support.v4.app.Fragment {
 
 
         // Inflate the layout for this fragment
-        String[] users =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
+       // String[] users =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         textViewName = (TextView) view.findViewById(R.id.textViewName);
         textViewBio = (TextView) view.findViewById(R.id.textViewBio);
         textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
         textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
+        imageView =(ImageView) view.findViewById(R.id.image);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -103,6 +113,7 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                 String[] bios= new String[10];
                 String[] addresses= new String[10];
                 String[] phones= new String[10];
+                String[] userID = new String[10];
                 int x = 0;
                 for (DataSnapshot user : usersChildren) {
 
@@ -110,6 +121,8 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                     bios[x]=user.child("bio").getValue().toString();
                     addresses[x]=user.child("address").getValue().toString();
                     phones[x]=user.child("phone").getValue().toString();
+                    userID[x]=user.getKey().toString();
+
 
                     System.out.println(names[x] + "this is the array shit");
 
@@ -117,6 +130,8 @@ public class UsersFragment extends android.support.v4.app.Fragment {
 
                 }
 
+                String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
+                Glide.with(getContext()).load(url).into(imageView);
                 textViewName.setText(names[i-1]);
                 textViewBio.setText(bios[i-1]);
                 textViewAddress.setText(addresses[i-1]);
