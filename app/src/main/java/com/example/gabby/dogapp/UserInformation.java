@@ -11,6 +11,7 @@ public class UserInformation {
     public String address;
     public String phone;
     public String bio;
+    public boolean isWalker;
 
     public UserInformation() {
 
@@ -21,11 +22,12 @@ public class UserInformation {
         this.address = address;
     }
 
-    public UserInformation(String name, String phone, String address, String bio) {
+    public UserInformation(String name, String phone, String address, String bio, boolean isWalker) {
 
         this.name = name;
         this.phone = phone;
         this.address = address;
         this.bio = bio;
+        this.isWalker = isWalker;
     }
 }

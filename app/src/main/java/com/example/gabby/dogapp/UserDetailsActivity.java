@@ -1,5 +1,6 @@
 package com.example.gabby.dogapp;
 
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,8 +47,9 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
     private Button finishButton;
     private Button uploadImageButton;
     private Button chooseImageButton;
-
+    private RadioButton isWalkerRadioButton, isNotWalkerRadioButton;
     private ImageView imageView;
+    private RadioGroup groupRadioGroup;
 
     private Uri filePath;
 
@@ -71,6 +75,9 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
         uploadImageButton.setOnClickListener(this);
         chooseImageButton = (Button) findViewById(R.id.chooseImageButton);
         chooseImageButton.setOnClickListener(this);
+        isWalkerRadioButton = (RadioButton) findViewById(R.id.isWalkerRadioButton);
+        isNotWalkerRadioButton = (RadioButton) findViewById(R.id.isNotWalkerRadioButton);
+
     }
 
     public void sendDetails() {
@@ -78,11 +85,32 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
         String phone = phoneEditText.getText().toString().trim();
         String address = addressEditText.getText().toString().trim();
         String bio = bioEditText.getText().toString().trim();
+        boolean isWalker;
 
-        UserInformation userInformation = new UserInformation(name, phone, address, bio);
+        if(isWalkerRadioButton.isChecked()) {
+            isWalker = true;
+        } else {
+            isWalker = false;
+        }
+
+        if(isWalkerRadioButton.isChecked() == false && isNotWalkerRadioButton.isChecked() == false) {
+            Toast.makeText(this, "Please choose an option", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+        UserInformation userInformation = new UserInformation(name, phone, address, bio, isWalker);
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        databaseReference.child("users/"+user.getUid()).setValue(userInformation);
+
+        //if statement here to differentiate between
+        if(isWalker) {
+            databaseReference.child("walkers/"+user.getUid()).setValue(userInformation);
+        } else {
+            databaseReference.child("non-walkers/"+user.getUid()).setValue(userInformation);
+
+        }
+
         Toast.makeText(this, "Information Saved!", Toast.LENGTH_LONG).show();
     }
 
