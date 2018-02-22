@@ -17,6 +17,8 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        //removes weird animation when changing activity
+        this.overridePendingTransition(0, 0);
         System.out.println("Search Activity");
         Log.d(TAG, "onCreate: started.");
         setupBottomNavigationView();

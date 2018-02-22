@@ -30,7 +30,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        System.out.println("Home");
+        //removes weird animation when changing activity
+        this.overridePendingTransition(0, 0);
         Log.d(TAG, "onCreate: starting.");
         //================================ Firebase Stuff ==================================================
         //get firebase auth db

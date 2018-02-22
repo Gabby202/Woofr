@@ -133,9 +133,6 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                 DataSnapshot usersSnapshot = dataSnapshot.child("walkers");
                 Iterable<DataSnapshot> usersChildren = usersSnapshot.getChildren();
 
-
-
-
                 int x = 0;
                 for (DataSnapshot user : usersChildren) {
 
@@ -146,20 +143,10 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                     userID[x]=user.getKey().toString();
                     System.out.println(userID[x]);
 
-
-
-
-
-
-
                     x++;
-
                 }
 
                 storageReference = FirebaseStorage.getInstance().getReference();
-
-
-
                 storageReference.child("images/"+userID[i-1]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -172,21 +159,11 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                     }
                 });
 
-
-
-
-
-
                 //String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
-
                 textViewName.setText(names[i-1]);
                 textViewBio.setText(bios[i-1]);
                 textViewAddress.setText(addresses[i-1]);
                 textViewPhone.setText(phones[i-1]);
-
-
-
-
             }
 
             @Override
@@ -206,8 +183,5 @@ public class UsersFragment extends android.support.v4.app.Fragment {
             smsIntent.setData(Uri.parse("sms:" + phones[i-1]));
 
             startActivity(smsIntent);
-
-
     }
-
 }

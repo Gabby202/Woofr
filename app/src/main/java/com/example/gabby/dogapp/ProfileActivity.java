@@ -24,6 +24,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        //removes weird animation when changing activity
+        this.overridePendingTransition(0, 0);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         logoutButton = (Button) findViewById(R.id.logoutButton);
