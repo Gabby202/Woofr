@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.gabby.dogapp.UsersFragment"
     >
-    
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,6 +57,12 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="30dp" />
+
+        <Button
+            android:id="@+id/smsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="sms" />
 
         <TextView
             android:id="@+id/textViewPhone"
