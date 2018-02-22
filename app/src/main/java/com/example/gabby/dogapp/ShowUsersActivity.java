@@ -6,16 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Map;
 
 public class ShowUsersActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,7 +41,7 @@ public class ShowUsersActivity extends AppCompatActivity implements View.OnClick
         if(view == finishButton) {
             finish();
 
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
 
         }

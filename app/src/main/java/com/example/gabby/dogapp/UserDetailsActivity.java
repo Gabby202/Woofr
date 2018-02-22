@@ -1,11 +1,8 @@
 package com.example.gabby.dogapp;
 
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,9 +24,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.IOException;
-import java.util.UUID;
 
 public class UserDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -180,7 +173,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
             sendDetails();
             finish();
 
-            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
 
         }

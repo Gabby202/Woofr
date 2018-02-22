@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gabby.dogapp.HomeActivity"
+    tools:context="com.example.gabby.dogapp.SearchActivity"
     android:id="@+id/drawerLayout">
 
     <RelativeLayout
@@ -30,13 +30,13 @@
             <include layout="@layout/layout_center_viewpager"/>
 
             <TextView
-                android:id="@+id/titleTextView"
+                android:id="@+id/searchTextView"
                 android:layout_width="200sp"
                 android:layout_height="50sp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="Home"
+                android:layout_marginTop="19dp"
+                android:text="Search"
                 android:textAlignment="center"
                 android:textSize="32sp" />
 

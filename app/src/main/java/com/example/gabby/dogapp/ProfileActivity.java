@@ -1,61 +1,47 @@
 package com.example.gabby.dogapp;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.example.gabby.dogapp.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-
 public class ProfileActivity extends AppCompatActivity {
-
     private static final String TAG = "ProfileActivity";
-
-    //========================== Firebase stuff ===========================================
-    private FirebaseAuth firebaseAuth;
-
-
-
-    //variable delcarations
-    private TextView welcomeTextView;
-
+    private static final int ACTIVITY_NUMBER = 4;
+    Button logoutButton;
+    FirebaseUser user;
+    FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Log.d(TAG, "onCreate: starting.");
-        //================================ Firebase Stuff ==================================================
-        //get firebase auth db
         firebaseAuth = FirebaseAuth.getInstance();
-        //get current user
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        //if user is not logged in, go back to login activity
-        if(firebaseAuth.getCurrentUser() == null) {
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-
+        user = firebaseAuth.getCurrentUser();
+        logoutButton = (Button) findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view == logoutButton) {
+                    firebaseAuth.signOut();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                }
+            }
+        });
+        Log.d(TAG, "onCreate: started.");
         setupBottomNavigationView();
 
-        //==================================== Variable Stuff ===============================================
-
-//        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
-        //sets text of textview to this, gets user email and appends to string
-//        welcomeTextView.setText("Welcome " + user.getEmail().toString().trim());
     }
+
 
     /**
      * Bottom navigation view setup
@@ -64,8 +50,9 @@ public class ProfileActivity extends AppCompatActivity {
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-
+        BottomNavigationViewHelper.enableNavigation(ProfileActivity.this, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(ACTIVITY_NUMBER);
+        menuItem.setChecked(true);
     }
-
 }
-

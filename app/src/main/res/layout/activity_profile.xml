@@ -29,6 +29,26 @@
 
             <include layout="@layout/layout_center_viewpager"/>
 
+            <TextView
+                android:id="@+id/profileTextView"
+                android:layout_width="200sp"
+                android:layout_height="50sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="Profile"
+                android:textAlignment="center"
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="65dp"
+                android:text="Logout" />
+
         </RelativeLayout>
 
         <!-- Bottom navigation -->
