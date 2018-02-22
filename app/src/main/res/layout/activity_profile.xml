@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,48 +7,34 @@
     tools:context="com.example.gabby.dogapp.ProfileActivity"
     android:id="@+id/drawerLayout">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include
-            layout="@layout/navigation_action_bar"
+        <!-- top toolbar -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="38dp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/welcomeTextView"
-            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="24dp" />
+            android:id="@+id/relLayout1">
 
-        <Space
+            <include layout="@layout/layout_top_tabs"/>
+        </RelativeLayout>
+
+        <!-- middle section (body)-->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="101dp" />
+            android:layout_height="match_parent"
+            android:id="@+id/relLayout2"
+            android:layout_below="@+id/relLayout1">
 
-    </LinearLayout>
+            <include layout="@layout/layout_center_viewpager"/>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nv1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:menu="@menu/navigation_menu"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header">
+        </RelativeLayout>
 
-    </android.support.design.widget.NavigationView>
+        <!-- Bottom navigation -->
+        <include layout="@layout/layout_bottom_navigation_view"/>
 
-</android.support.v4.widget.DrawerLayout>
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
