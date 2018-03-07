@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(firebaseAuth.getCurrentUser() != null) {
             //start profile activity
             finish();
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            startActivity(new Intent(getApplicationContext(), WalkerMapActivity.class));
         }
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener(this);
