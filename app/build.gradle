@@ -40,5 +40,7 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     compile "com.android.support:design:26.+"
 
+
+    compile 'com.google.android.gms:play-services-location:9.4.0'
 }
 apply plugin: 'com.google.gms.google-services'
