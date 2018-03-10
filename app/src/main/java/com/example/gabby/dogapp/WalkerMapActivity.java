@@ -17,6 +17,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -27,6 +29,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import android.Manifest;
 
 public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -97,6 +103,13 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         //set value from 1 - 21
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        System.out.println(userId.toString());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("walkersAvailable");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+
     }
 
 
@@ -210,6 +223,16 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             }
 
         }
+    }
+
+    //remove walker from database if they close the app
+    protected void onStop() {
+        super.onStop();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("walkersAvailable");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userId);
+
     }
 
 }

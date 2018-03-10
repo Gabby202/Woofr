@@ -40,6 +40,7 @@ dependencies {
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     compile "com.android.support:design:26.+"
 
+    compile 'com.firebase:geofire-android:2.0.0'
 
     compile 'com.google.android.gms:play-services-location:9.4.0'
 }

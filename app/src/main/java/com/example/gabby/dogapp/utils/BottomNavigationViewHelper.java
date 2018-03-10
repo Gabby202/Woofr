@@ -13,6 +13,7 @@ import com.example.gabby.dogapp.NotifsActivity;
 import com.example.gabby.dogapp.ProfileActivity;
 import com.example.gabby.dogapp.R;
 import com.example.gabby.dogapp.SearchActivity;
+import com.example.gabby.dogapp.WalkerMapActivity;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 /**
@@ -38,7 +39,7 @@ public class BottomNavigationViewHelper {
                     case R.id.ic_house: Intent intent1 = new Intent(context, HomeActivity.class);
                         context.startActivity(intent1);
                         break;
-                    case R.id.ic_search: Intent intent2 = new Intent(context, SearchActivity.class);
+                    case R.id.ic_search: Intent intent2 = new Intent(context, WalkerMapActivity.class);
                         context.startActivity(intent2);
 
                         break;
