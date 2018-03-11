@@ -98,9 +98,9 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
 
         //if statement here to differentiate between
         if(isWalker) {
-            databaseReference.child("walkers/"+user.getUid()).setValue(userInformation);
+            databaseReference.child("users/walkers/"+user.getUid()).setValue(userInformation);
         } else {
-            databaseReference.child("non-walkers/"+user.getUid()).setValue(userInformation);
+            databaseReference.child("users/owners/"+user.getUid()).setValue(userInformation);
 
         }
 

@@ -10,11 +10,14 @@ import android.view.MenuItem;
 import com.example.gabby.dogapp.BrowseActivity;
 import com.example.gabby.dogapp.HomeActivity;
 import com.example.gabby.dogapp.NotifsActivity;
+import com.example.gabby.dogapp.OwnerMapActivity;
 import com.example.gabby.dogapp.ProfileActivity;
 import com.example.gabby.dogapp.R;
 import com.example.gabby.dogapp.SearchActivity;
 import com.example.gabby.dogapp.WalkerMapActivity;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.security.acl.Owner;
 
 /**
  * Created by Gabby on 2/22/2018.
@@ -22,7 +25,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 public class BottomNavigationViewHelper {
     private static final String TAG = "BottomNavigationViewHel";
-
     public static void setupBottomNavigationView(BottomNavigationViewEx bottomNavigationViewEx) {
         Log.d(TAG, "setting up BottomNavigationView: BottomNavigationView");
         bottomNavigationViewEx.enableAnimation(false);
@@ -41,7 +43,6 @@ public class BottomNavigationViewHelper {
                         break;
                     case R.id.ic_search: Intent intent2 = new Intent(context, WalkerMapActivity.class);
                         context.startActivity(intent2);
-
                         break;
                     case R.id.ic_browse: Intent intent3 = new Intent(context, BrowseActivity.class);
                         context.startActivity(intent3);

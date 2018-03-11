@@ -130,7 +130,7 @@ public class UsersFragment extends android.support.v4.app.Fragment {
         String message = Integer.toString(bundle.getInt("count"));
         i = bundle.getInt("count");
 
-                DataSnapshot usersSnapshot = dataSnapshot.child("walkers");
+                DataSnapshot usersSnapshot = dataSnapshot.child("users/walkers");
                 Iterable<DataSnapshot> usersChildren = usersSnapshot.getChildren();
 
                 int x = 0;
