@@ -19,6 +19,16 @@
         android:id="@+id/cancelButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel" />
+        android:text="Cancel"
+        android:layout_gravity="bottom"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Awaiting request..."
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
 </FrameLayout>
