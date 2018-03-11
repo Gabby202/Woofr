@@ -1,8 +1,10 @@
 package com.example.gabby.dogapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -34,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import android.Manifest;
+import android.view.View;
+import android.widget.Button;
 
 public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -43,7 +47,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationRequest locationRequest;
     LocationManager locationManager;
     String provider;
-
+    private Button cancelButton;
 
 
     @Override
@@ -51,11 +55,24 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walker_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v == cancelButton) {
+                    finish();
+                    onStop();
+                    System.exit(0);
+                }
+            }
+        });
 
         provider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
@@ -147,6 +164,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     }
 
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -187,6 +205,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
+
+
             }
             return false;
         } else {
@@ -234,5 +254,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         geoFire.removeLocation(userId);
 
     }
+
+
 
 }
