@@ -12,7 +12,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 public class BrowseActivity extends FragmentActivity {
     private static final String TAG="BrowseActivity";
-    private static final int ACTIVITY_NUMBER = 2;
+    private static final int ACTIVITY_NUMBER = 1;
     ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

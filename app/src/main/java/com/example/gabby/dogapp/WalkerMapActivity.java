@@ -38,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import android.Manifest;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+import android.widget.Toast;
 
 public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -67,9 +69,11 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
                 if (v == cancelButton) {
+                    displayMessage();
                     finish();
                     onStop();
                     System.exit(0);
+
                 }
             }
         });
@@ -78,6 +82,10 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         checkLocationPermission();
     }
 
+    protected void displayMessage() {
+        Toast.makeText(this, "Search Cancelled", Toast.LENGTH_LONG).show();
+        System.out.println("=================worked========================");
+    }
 
     /**
      * Manipulates the map once available.
