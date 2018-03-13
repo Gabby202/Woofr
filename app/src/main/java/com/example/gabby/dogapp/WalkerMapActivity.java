@@ -32,14 +32,20 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import android.Manifest;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.Toast;
+
+import java.util.List;
+import java.util.Map;
 
 public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -50,7 +56,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationManager locationManager;
     String provider;
     private Button cancelButton;
-
+    private String ownerID = " ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +84,66 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
+        getAssignedOwner();
+
         provider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
+    }
+
+    private void getAssignedOwner(){
+        String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child(walkerID);
+        assignedWalkerRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("ownerWalkID") != null){
+                        ownerID = map.get("ownerWalkID").toString();
+                        getAssignedOwnerPickupLocation();
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAssignedOwnerPickupLocation(){
+        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
+        assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                   List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double LocationLat = 0;
+                    double LocationLng = 0;
+                    if(map.get(0) != null){
+                        LocationLat = Double.parseDouble(map.get(0).toString());
+                        LocationLng = Double.parseDouble(map.get(1).toString());
+
+                    }
+                    LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
+
+                    mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Pickup Location")));
+                }
+
+                }
+
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     protected void displayMessage() {
@@ -120,20 +184,43 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     //called every second (or whatever its set to)
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation = location;
 
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if(getApplicationContext() !=null){
 
-        //move camera at same pace as user moving
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //set value from 1 - 21
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            lastLocation = location;
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            //move camera at same pace as user moving
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //set value from 1 - 21
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        System.out.println(userId.toString());
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("walkersAvailable");
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+            System.out.println(userId.toString());
+            DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("walkersAvailable");
+            DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("walkersWorking");
+            GeoFire geoFireAvailable = new GeoFire(refAvailable);
+            GeoFire geoFireWorking = new GeoFire(refWorking);
+
+
+            switch (ownerID) {
+                case "":
+                    geoFireWorking.removeLocation(userId);
+                    geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+
+                    break;
+                default:
+                    geoFireAvailable.removeLocation(userId);
+                    geoFireWorking.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+
+
+                    break;
+
+            }
+        }
+
+
+
+
 
     }
 

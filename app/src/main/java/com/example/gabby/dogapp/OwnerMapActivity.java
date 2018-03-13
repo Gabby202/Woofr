@@ -21,6 +21,8 @@ import android.support.v4.content.ContextCompat;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -30,14 +32,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import android.Manifest;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -79,12 +88,114 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     requestButton.setText("Getting your walker...");
 
+                    getClostestWalkerAvailable();
                 }
             }
         });
 
         provider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
+    }
+
+    private int radius = 1;
+    private Boolean walkerFound = false;
+    private String walkerFoundID;
+    private void getClostestWalkerAvailable(){
+        DatabaseReference walkerLocation = FirebaseDatabase.getInstance().getReference().child("walkersAvailable");
+
+        GeoFire geofire = new GeoFire(walkerLocation);
+        GeoQuery geoQuery = geofire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
+
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            //if walker found within radius, this method is called, key is walkers's key in db and location is their location using long and lat
+            public void onKeyEntered(String key, GeoLocation location)  {
+                if(!walkerFound){
+                    walkerFound = true;
+                    walkerFoundID = key;
+
+
+                    //if walker was found within the radius their userID will be stored in the DB. This lets us keep track of available walkers and working walkers.
+                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child("walkerFoundID");
+                    String ownerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    HashMap map = new HashMap();
+
+                    //updates the DB
+                    map.put("ownerWalkID", ownerID);
+                    walkerRef.updateChildren(map);
+
+                    getWalkerLocation();
+                    requestButton.setText("Looking for walker location...");
+                }
+
+
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            //if walker not found within radius, radius goes up by 1 and method is called again to check for walker with the new radius
+            public void onGeoQueryReady() {
+                if(!walkerFound){
+                    radius++;
+                    getClostestWalkerAvailable();
+                }
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+
+    }
+
+   private Marker walkerMarker;
+//gets the location of the walker once they have been requested
+    private void getWalkerLocation(){
+
+        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
+        walkerLocationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double LocationLat = 0;
+                    double LocationLng = 0;
+
+                    requestButton.setText("Walker Found!");
+
+                    if(map.get(0) != null){
+                        LocationLat = Double.parseDouble(map.get(0).toString());
+                        LocationLng = Double.parseDouble(map.get(1).toString());
+
+                    }
+
+                    LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
+
+                    if(walkerMarker != null){ //app will crash without this if because it will try to delete something that is not there
+                        walkerMarker.remove();
+                    }
+
+                    walkerMarker = mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
