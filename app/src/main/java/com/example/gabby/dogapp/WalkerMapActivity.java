@@ -92,16 +92,15 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedOwner(){
         String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child(walkerID);
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child(walkerID).child("ownerWalkID");
         assignedWalkerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if(map.get("ownerWalkID") != null){
-                        ownerID = map.get("ownerWalkID").toString();
+                        ownerID = dataSnapshot.getValue().toString();
                         getAssignedOwnerPickupLocation();
-                    }
+
 
 
                 }

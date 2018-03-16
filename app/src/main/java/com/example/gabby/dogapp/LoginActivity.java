@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,6 +26,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView registerTextView;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         progressDialog.dismiss();
 
                         if(task.isSuccessful()) {
+                            
                             //start profile activity
                             finish();
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -90,10 +93,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     public void onClick(View view) {
         if(view == loginButton) {
+
             userLogin();
         }
 
         if(view == registerTextView) {
+
             finish(); //closes activity
             //changes to RegisterActivity
             startActivity(new Intent(this, RegisterActivity.class));

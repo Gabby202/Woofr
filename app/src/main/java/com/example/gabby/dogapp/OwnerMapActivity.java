@@ -185,6 +185,21 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     if(walkerMarker != null){ //app will crash without this if because it will try to delete something that is not there
                         walkerMarker.remove();
                     }
+                    Location loc1 = new Location(""); //Location variable can give distance between two co-ordinates
+                    loc1.setLatitude(pickupLocation.latitude);
+                    loc1.setLongitude(pickupLocation.longitude);
+
+                    Location loc2 = new Location("");
+                    loc2.setLatitude(walkerLatLng.latitude);
+                    loc2.setLongitude(walkerLatLng.longitude);
+
+                    float distance = loc1.distanceTo(loc2); //finds distance between the two locations
+
+                    if(distance < 100){
+                        requestButton.setText("Walker is here! "); //notifies dog owner the walker is here
+                    }else {
+                        requestButton.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
+                    }
 
                     walkerMarker = mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
                 }
