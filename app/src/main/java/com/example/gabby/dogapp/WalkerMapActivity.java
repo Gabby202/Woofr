@@ -196,20 +196,18 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
             System.out.println(userId.toString());
             DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("walkersAvailable");
-            DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("walkersWorking");
             GeoFire geoFireAvailable = new GeoFire(refAvailable);
-            GeoFire geoFireWorking = new GeoFire(refWorking);
 
 
             switch (ownerID) {
                 case "":
-                    geoFireWorking.removeLocation(userId);
+                    geoFireAvailable.removeLocation(userId);
                     geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
 
                     break;
                 default:
                     geoFireAvailable.removeLocation(userId);
-                    geoFireWorking.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+                    geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
 
 
                     break;
