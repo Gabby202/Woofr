@@ -92,15 +92,16 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedOwner(){
         String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child(walkerID).child("ownerWalkID");
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID);
         assignedWalkerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                        ownerID = dataSnapshot.getValue().toString();
+                    if(map.get("ownerWalkID") != null){
+                        ownerID = map.get("ownerWalkID").toString();
                         getAssignedOwnerPickupLocation();
-
+                    }
 
 
                 }
@@ -115,25 +116,26 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getAssignedOwnerPickupLocation(){
-        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
+        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
         assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                   List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double LocationLat = 0;
                     double LocationLng = 0;
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1) != null) {
                         LocationLng = Double.parseDouble(map.get(1).toString());
-
                     }
                     LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
 
                     mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Pickup Location")));
                 }
 
-                }
+            }
 
 
 
@@ -194,20 +196,22 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            System.out.println(userId.toString());
+            //System.out.println(userId.toString());
             DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("walkersAvailable");
+            DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("walkersWorking");
             GeoFire geoFireAvailable = new GeoFire(refAvailable);
+            GeoFire geoFireWorking = new GeoFire(refWorking);
 
 
             switch (ownerID) {
                 case "":
-                    geoFireAvailable.removeLocation(userId);
+                    geoFireWorking.removeLocation(userId);
                     geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
 
                     break;
                 default:
                     geoFireAvailable.removeLocation(userId);
-                    geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
+                    geoFireWorking.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
 
 
                     break;

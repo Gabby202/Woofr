@@ -41,7 +41,7 @@ public class BottomNavigationViewHelper {
                     case R.id.ic_house: Intent intent1 = new Intent(context, HomeActivity.class);
                         context.startActivity(intent1);
                         break;
-                    case R.id.ic_search: Intent intent2 = new Intent(context, OwnerMapActivity.class);
+                    case R.id.ic_search: Intent intent2 = new Intent(context, WalkerMapActivity.class);
                         context.startActivity(intent2);
                         break;
                     case R.id.ic_browse: Intent intent3 = new Intent(context, BrowseActivity.class);

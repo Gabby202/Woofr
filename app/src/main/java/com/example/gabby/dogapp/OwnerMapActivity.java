@@ -88,7 +88,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     requestButton.setText("Getting your walker...");
 
-                    getClosestWalkerAvailable();
+                    getClostestWalkerAvailable();
                 }
             }
         });
@@ -100,12 +100,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private int radius = 1;
     private Boolean walkerFound = false;
     private String walkerFoundID;
-    private void getClosestWalkerAvailable(){
+    private void getClostestWalkerAvailable(){
         DatabaseReference walkerLocation = FirebaseDatabase.getInstance().getReference().child("walkersAvailable");
 
         GeoFire geofire = new GeoFire(walkerLocation);
         GeoQuery geoQuery = geofire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
-        geoQuery.removeAllListeners();
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -114,8 +113,19 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                 if(!walkerFound){
                     walkerFound = true;
                     walkerFoundID = key;
-                    System.out.println("WALKER FOUND ======================");
-                    System.out.println("Radius: " + radius);
+
+
+                    //if walker was found within the radius their userID will be stored in the DB. This lets us keep track of available walkers and working walkers.
+                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
+                    String ownerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    HashMap map = new HashMap();
+
+                    //updates the DB
+                    map.put("ownerWalkID", ownerID);
+                    walkerRef.updateChildren(map);
+
+                    getWalkerLocation();
+                    requestButton.setText("Looking for walker location...");
                 }
 
 
@@ -136,7 +146,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             public void onGeoQueryReady() {
                 if(!walkerFound){
                     radius++;
-                    getClosestWalkerAvailable();
+                    getClostestWalkerAvailable();
                 }
 
             }
@@ -153,7 +163,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     //gets the location of the walker once they have been requested
     private void getWalkerLocation(){
 
-        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
+        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
         walkerLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -166,8 +176,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1) != null) {
                         LocationLng = Double.parseDouble(map.get(1).toString());
-
                     }
 
                     LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
