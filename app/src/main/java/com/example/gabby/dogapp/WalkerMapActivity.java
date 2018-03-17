@@ -56,7 +56,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationManager locationManager;
     String provider;
     private Button cancelButton;
-    private String ownerID = " ";
+    private String ownerID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                     ownerID = dataSnapshot.getValue().toString();
 
                     getAssignedOwnerPickupLocation();
-                    
+
                 }
 
             }
