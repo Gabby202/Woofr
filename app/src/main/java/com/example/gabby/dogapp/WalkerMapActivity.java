@@ -92,18 +92,15 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedOwner(){
         String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child(walkerID);
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("customerRideId");
         assignedWalkerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                    if(map.get("ownerWalkID") != null){
-                        ownerID = map.get("ownerWalkID").toString();
-                        getAssignedOwnerPickupLocation();
-                    }
+                    ownerID = dataSnapshot.getValue().toString();
 
-
+                    getAssignedOwnerPickupLocation();
+                    
                 }
 
             }
@@ -116,7 +113,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getAssignedOwnerPickupLocation(){
-        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
+        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
         assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

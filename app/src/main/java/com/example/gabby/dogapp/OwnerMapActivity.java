@@ -116,7 +116,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
 
                     //if walker was found within the radius their userID will be stored in the DB. This lets us keep track of available walkers and working walkers.
-                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Walkers").child("walkerFoundID");
+                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child("walkerFoundID");
                     String ownerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     HashMap map = new HashMap();
 
@@ -163,7 +163,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 //gets the location of the walker once they have been requested
     private void getWalkerLocation(){
 
-        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("WalkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
+        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
         walkerLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
