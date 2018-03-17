@@ -97,9 +97,10 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    ownerID = dataSnapshot.getValue().toString();
+                        ownerID = dataSnapshot.getValue().toString();
+                        getAssignedOwnerPickupLocation();
 
-                    getAssignedOwnerPickupLocation();
+
 
                 }
 
