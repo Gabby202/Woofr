@@ -43,6 +43,7 @@
         <activity android:name=".SearchActivity" />
         <activity android:name=".NotifsActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".MapRedirectActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

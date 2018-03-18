@@ -59,13 +59,9 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         nameEditText = (EditText) findViewById(R.id.nameEditText);
-        addressEditText = (EditText) findViewById(R.id.addressEditText);
         phoneEditText = (EditText) findViewById(R.id.phoneEditText);
-        bioEditText = (EditText) findViewById(R.id.bioEditText);
         finishButton = (Button) findViewById(R.id.finishButton);
         finishButton.setOnClickListener(this);
-        uploadImageButton = (Button) findViewById(R.id.uploadImageButton);
-        uploadImageButton.setOnClickListener(this);
         chooseImageButton = (Button) findViewById(R.id.chooseImageButton);
         chooseImageButton.setOnClickListener(this);
         isWalkerRadioButton = (RadioButton) findViewById(R.id.isWalkerRadioButton);
@@ -76,8 +72,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
     public void sendDetails() {
         String name = nameEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
-        String address = addressEditText.getText().toString().trim();
-        String bio = bioEditText.getText().toString().trim();
+
         boolean isWalker;
 
         if(isWalkerRadioButton.isChecked()) {
@@ -92,7 +87,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
         }
 
 
-        UserInformation userInformation = new UserInformation(name, phone, address, bio, isWalker);
+        UserInformation userInformation = new UserInformation(name, phone, isWalker);
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
@@ -171,6 +166,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         if(view == finishButton) {
             sendDetails();
+            uploadImage();
             finish();
 
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -183,9 +179,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
 
         }
 
-        else if(view == uploadImageButton){
-            uploadImage();
 
         }
     }
-}
+
