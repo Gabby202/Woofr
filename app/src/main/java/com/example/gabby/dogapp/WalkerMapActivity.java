@@ -100,8 +100,6 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         ownerID = dataSnapshot.getValue().toString();
                         getAssignedOwnerPickupLocation();
 
-
-
                 }
 
             }
@@ -124,8 +122,9 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                     double LocationLng = 0;
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1) != null) {
                         LocationLng = Double.parseDouble(map.get(1).toString());
-
                     }
                     LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
 

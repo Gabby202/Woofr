@@ -176,6 +176,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
+                    }
+                    if(map.get(1) != null) {
                         LocationLng = Double.parseDouble(map.get(1).toString());
 
                     }
