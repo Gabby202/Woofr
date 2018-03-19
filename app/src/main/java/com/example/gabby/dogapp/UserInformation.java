@@ -8,26 +8,22 @@ public class UserInformation {
     //set variables you want to store for each user
     public String name;
     public String username;
-    public String address;
     public String phone;
-    public String bio;
     public boolean isWalker;
 
     public UserInformation() {
 
     }
 
-    public UserInformation(String username, String address) {
+    public UserInformation(String username) {
         this.username = username;
-        this.address = address;
+
     }
 
-    public UserInformation(String name, String phone, String address, String bio, boolean isWalker) {
+    public UserInformation(String name, String phone, boolean isWalker) {
 
         this.name = name;
         this.phone = phone;
-        this.address = address;
-        this.bio = bio;
         this.isWalker = isWalker;
     }
 }

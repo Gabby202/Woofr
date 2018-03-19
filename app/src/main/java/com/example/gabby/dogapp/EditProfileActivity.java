@@ -68,7 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String address = addressEditText.getText().toString().trim();
 
         //reference java class i made which will store information for the user
-        UserInformation userInformation = new UserInformation(username, address);
+        UserInformation userInformation = new UserInformation(username);
         //get current user logged in
         FirebaseUser user = firebaseAuth.getCurrentUser();
         //get unique id for user, and set the variables inside the object made above as children to it

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.gabby.dogapp.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,7 +18,8 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
     private static final int ACTIVITY_NUMBER = 4;
-    Button logoutButton;
+    Button logoutButton, editDetailsButton;
+    TextView userNametextView, phoneNumbertextView;
     FirebaseUser user;
     FirebaseAuth firebaseAuth;
     @Override
@@ -28,6 +30,19 @@ public class ProfileActivity extends AppCompatActivity {
         this.overridePendingTransition(0, 0);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+
+        userNametextView =
+        editDetailsButton = (Button) findViewById(R.id.editDetailsButton);
+        editDetailsButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(view == editDetailsButton) {
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), UserDetailsActivity.class)); //will have to write a new class for this
+                }
+            }
+        }));
+
         logoutButton = (Button) findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -46,8 +46,48 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="65dp"
+                android:layout_marginBottom="66dp"
                 android:text="Logout" />
+
+            <Button
+                android:id="@+id/editDetailsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/logoutButton"
+                android:layout_alignEnd="@+id/logoutButton"
+                android:layout_alignLeft="@+id/logoutButton"
+                android:layout_alignRight="@+id/logoutButton"
+                android:layout_alignStart="@+id/logoutButton"
+                android:layout_marginBottom="25dp"
+                android:text="Edit Details" />
+
+            <TextView
+                android:id="@+id/userNametextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/phoneNumbertextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="27dp"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/phoneNumbertextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/editDetailsButton"
+                android:layout_alignLeft="@+id/userNametextView"
+                android:layout_alignStart="@+id/userNametextView"
+                android:layout_marginBottom="41dp"
+                android:text="TextView" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profileTextView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="42dp"
+                app:srcCompat="@drawable/common_full_open_on_phone" />
 
         </RelativeLayout>
 

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.example.gabby.dogapp.BrowseActivity;
 import com.example.gabby.dogapp.HomeActivity;
+import com.example.gabby.dogapp.MapRedirectActivity;
 import com.example.gabby.dogapp.NotifsActivity;
 import com.example.gabby.dogapp.OwnerMapActivity;
 import com.example.gabby.dogapp.ProfileActivity;
@@ -41,7 +42,7 @@ public class BottomNavigationViewHelper {
                     case R.id.ic_house: Intent intent1 = new Intent(context, HomeActivity.class);
                         context.startActivity(intent1);
                         break;
-                    case R.id.ic_search: Intent intent2 = new Intent(context, WalkerMapActivity.class);
+                    case R.id.ic_search: Intent intent2 = new Intent(context, MapRedirectActivity.class);
                         context.startActivity(intent2);
                         break;
                     case R.id.ic_browse: Intent intent3 = new Intent(context, BrowseActivity.class);
