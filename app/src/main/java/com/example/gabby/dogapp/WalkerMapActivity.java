@@ -30,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,6 +58,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     String provider;
     private Button cancelButton;
     private String ownerID = "";
+    private LatLng pickupLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,12 +94,14 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedOwner(){
         String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("customerRideId");
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerWalkID");
         assignedWalkerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+
                         ownerID = dataSnapshot.getValue().toString();
+
                         getAssignedOwnerPickupLocation();
 
                 }
@@ -111,24 +115,27 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
+    Marker pickupMarker;
+    private DatabaseReference assignedWalkerPickupLocationRef;
+    private ValueEventListener assignedOwnerPickupLocationRefListener;
     private void getAssignedOwnerPickupLocation(){
-        DatabaseReference assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("customerId").child("l"); //the child l is used by location services to store long and lang values
+        assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("ownerRequest").child(ownerID).child("l"); //the child l is used by location services to store long and lang values
         assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                   List<Object> map = (List<Object>) dataSnapshot.getValue();
-                    double LocationLat = 0;
-                    double LocationLng = 0;
+                if (dataSnapshot.exists() && !ownerID.equals("")){
+                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+                    double locationLat = 0;
+                    double locationLng = 0;
                     if(map.get(0) != null){
-                        LocationLat = Double.parseDouble(map.get(0).toString());
+                        locationLat = Double.parseDouble(map.get(0).toString());
                     }
                     if(map.get(1) != null) {
-                        LocationLng = Double.parseDouble(map.get(1).toString());
+                        locationLng = Double.parseDouble(map.get(1).toString());
                     }
-                    LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
-
-                    mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Pickup Location")));
+                    pickupLatLng = new LatLng(locationLat, locationLng);
+                    mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
+                    //pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
                 }
 
                 }
@@ -141,6 +148,10 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
+    }
+
+    private void getRouteToMarker() {
+        //see his github for this
     }
 
     protected void displayMessage() {
@@ -192,7 +203,9 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            System.out.println(userId.toString());
+            System.out.println("THIS USER ID " + userId.toString());
+            System.out.println("OWNER ID: " + ownerID.toString());
+
             DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("walkersAvailable");
             DatabaseReference refWorking = FirebaseDatabase.getInstance().getReference("walkersWorking");
             GeoFire geoFireAvailable = new GeoFire(refAvailable);

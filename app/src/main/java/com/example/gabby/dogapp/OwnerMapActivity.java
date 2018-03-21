@@ -105,7 +105,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
         GeoFire geofire = new GeoFire(walkerLocation);
         GeoQuery geoQuery = geofire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
-
+        geoQuery.removeAllListeners();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             //if walker found within radius, this method is called, key is walkers's key in db and location is their location using long and lat
@@ -114,9 +114,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     walkerFound = true;
                     walkerFoundID = key;
 
-
+                    System.out.println("walker found id" + key + " ============================================== key");
                     //if walker was found within the radius their userID will be stored in the DB. This lets us keep track of available walkers and working walkers.
-                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child("walkerFoundID");
+                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
                     String ownerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     HashMap map = new HashMap();
 
@@ -162,8 +162,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
    private Marker walkerMarker;
 //gets the location of the walker once they have been requested
     private void getWalkerLocation(){
-
-        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child("walkerFoundId").child("l"); //the child l is used by location services to store long and lang values
+        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child(walkerFoundID).child("l"); //the child l is used by location services to store long and lang values
         walkerLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -183,10 +182,13 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     }
 
                     LatLng walkerLatLng = new LatLng(LocationLat, LocationLng);
-
                     if(walkerMarker != null){ //app will crash without this if because it will try to delete something that is not there
                         walkerMarker.remove();
                     }
+                    mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
+
+
+
                     Location loc1 = new Location(""); //Location variable can give distance between two co-ordinates
                     loc1.setLatitude(pickupLocation.latitude);
                     loc1.setLongitude(pickupLocation.longitude);
@@ -203,7 +205,6 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         requestButton.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
                     }
 
-                    walkerMarker = mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
                 }
             }
 
