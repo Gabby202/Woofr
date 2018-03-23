@@ -60,6 +60,10 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     private LatLng pickupLocation;
 
+    private boolean requestBol = false;
+
+    private Marker pickupMarker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,18 +81,43 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onClick(View v) {
                 if (v == requestButton) {
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    if(requestBol){
+                        requestBol = false;
+                        geoQuery.removeAllListeners();
+                        walkerLocationRef.removeEventListener(walkerLocationListener);
 
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
-                    GeoFire geoFire = new GeoFire(ref);
-                    geoFire.setLocation(userId, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()));
+                        if(walkerFoundID != null){
+                            DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("drivers").child(walkerFoundID);
+                            walkerRef.setValue(true);
+                            walkerFoundID = null;
+                        }
+                        walkerFound = false;
+                        radius = 1;
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.removeLocation(userId);
 
-                    pickupLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
+                        //if marker doesn't exist the app may crash
+                        if(pickupMarker != null){
+                            pickupMarker.remove();
+                        }
+                        requestButton.setText("Request walker");
+                    }else {
+                        requestBol = true;
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                    requestButton.setText("Getting your walker...");
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.setLocation(userId, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()));
 
-                    getClostestWalkerAvailable();
+                        pickupLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                        pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
+
+                        requestButton.setText("Getting your walker...");
+
+                        getClostestWalkerAvailable();
+                    }
                 }
             }
         });
@@ -100,17 +129,19 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private int radius = 1;
     private Boolean walkerFound = false;
     private String walkerFoundID;
+
+    GeoQuery geoQuery;
     private void getClostestWalkerAvailable(){
         DatabaseReference walkerLocation = FirebaseDatabase.getInstance().getReference().child("walkersAvailable");
 
         GeoFire geofire = new GeoFire(walkerLocation);
-        GeoQuery geoQuery = geofire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
+        geoQuery = geofire.queryAtLocation(new GeoLocation(pickupLocation.latitude, pickupLocation.longitude), radius);
         geoQuery.removeAllListeners();
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             //if walker found within radius, this method is called, key is walkers's key in db and location is their location using long and lat
             public void onKeyEntered(String key, GeoLocation location)  {
-                if(!walkerFound){
+                if(!walkerFound && requestBol){
                     walkerFound = true;
                     walkerFoundID = key;
 
@@ -159,14 +190,16 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
-   private Marker walkerMarker;
+    private Marker walkerMarker;
+    private DatabaseReference walkerLocationRef;
+    private ValueEventListener walkerLocationListener;
 //gets the location of the walker once they have been requested
     private void getWalkerLocation(){
-        DatabaseReference walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child(walkerFoundID).child("l"); //the child l is used by location services to store long and lang values
-        walkerLocationRef.addValueEventListener(new ValueEventListener() {
+        walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child(walkerFoundID).child("l"); //the child l is used by location services to store long and lang values
+        walkerLocationListener = walkerLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists() && requestBol){
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double LocationLat = 0;
                     double LocationLng = 0;

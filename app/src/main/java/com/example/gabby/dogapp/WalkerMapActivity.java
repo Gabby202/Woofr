@@ -99,10 +99,16 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-
                         ownerID = dataSnapshot.getValue().toString();
-
                         getAssignedOwnerPickupLocation();
+                }else{
+                    ownerID = "";
+                    if(pickupMarker !=null){
+                        pickupMarker.remove();
+                    }
+                    if(assignedOwnerPickupLocationRefListener != null){
+                        assignedWalkerPickupLocationRef.removeEventListener(assignedOwnerPickupLocationRefListener);
+                    }
 
                 }
 
@@ -120,7 +126,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private ValueEventListener assignedOwnerPickupLocationRefListener;
     private void getAssignedOwnerPickupLocation(){
         assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("ownerRequest").child(ownerID).child("l"); //the child l is used by location services to store long and lang values
-        assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
+        assignedOwnerPickupLocationRefListener = assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists() && !ownerID.equals("")){
@@ -134,7 +140,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     pickupLatLng = new LatLng(locationLat, locationLng);
-                    mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
+                   pickupMarker =  mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
                     //pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
                 }
 
