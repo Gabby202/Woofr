@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(view == editDetailsButton) {
                     finish();
-                    startActivity(new Intent(getApplicationContext(), UserDetailsActivity.class)); //will have to write a new class for this
+                    startActivity(new Intent(getApplicationContext(), EditUserDetailsActivity.class)); //will have to write a new class for this
                 }
             }
         }));
