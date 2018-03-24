@@ -10,6 +10,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -32,16 +34,24 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.Manifest;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toast;
 
@@ -60,6 +70,13 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private String ownerID = "";
     private LatLng pickupLatLng;
 
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageReference = storage.getReference();
+    private LinearLayout ownerInfo;
+    private ImageView ownerProfileImage;
+    private TextView ownerNameField, ownerPhoneField;
+    private String name, phone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +88,11 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+
+        ownerInfo = (LinearLayout) findViewById(R.id.ownerInfo);
+        ownerProfileImage = (ImageView) findViewById(R.id.ownerProfileImage);
+        ownerNameField = (TextView) findViewById(R.id.ownerName);
+        ownerPhoneField = (TextView) findViewById(R.id.ownerPhone);
 
         cancelButton = (Button) findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +123,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                 if (dataSnapshot.exists()){
                         ownerID = dataSnapshot.getValue().toString();
                         getAssignedOwnerPickupLocation();
+                        getAssignedOwnerInfo();
                 }else{
                     ownerID = "";
                     if(pickupMarker !=null){
@@ -110,8 +133,68 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         assignedWalkerPickupLocationRef.removeEventListener(assignedOwnerPickupLocationRefListener);
                     }
 
+                    ownerInfo.setVisibility(View.GONE);
+                    ownerNameField.setText("");
+                    ownerPhoneField.setText("");
+                    ownerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+
                 }
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void getAssignedOwnerInfo(){
+        ownerInfo.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+
+                    name = dataSnapshot.child("name").getValue().toString();
+                    phone = dataSnapshot.child("phone").getValue().toString();
+
+                    if(name != null) {
+                        ownerNameField.setText(name);
+                    }
+
+                    if(phone != null) {
+                        ownerPhoneField.setText(phone);
+                    }
+
+                    storageReference = FirebaseStorage.getInstance().getReference();
+                    storageReference.child("images/"+ownerID).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(WalkerMapActivity.this).load(uri).into(ownerProfileImage);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+
+                   /* Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("name") != null){
+                        name = map.get("name").toString();
+                        nameField.setText(name);
+                    }
+
+                    if(map.get("phone") != null){
+                        phone = map.get("phone").toString();
+                        phoneField.setText(phone);
+                    } */
+
+
+
+                }
             }
 
             @Override
@@ -233,10 +316,6 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
             }
         }
-
-
-
-
 
     }
 
