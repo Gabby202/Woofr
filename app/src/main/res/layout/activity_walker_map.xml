@@ -15,12 +15,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.gabby.dogapp.WalkerMapActivity" />
 
-    <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:layout_gravity="bottom"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -31,6 +25,11 @@
         android:textColor="#606060	"
         android:textSize="30sp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation = "vertical"
+        android:layout_gravity="bottom">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +66,15 @@
                     android:paddingBottom="10sp"
                     android:paddingTop="20sp"/>
             </LinearLayout>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_gravity="bottom"/>
     </LinearLayout>
 
 </FrameLayout>

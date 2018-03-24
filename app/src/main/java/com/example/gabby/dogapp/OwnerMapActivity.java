@@ -10,6 +10,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -34,16 +36,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.Manifest;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +73,14 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     private Marker pickupMarker;
 
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageReference = storage.getReference();
+
+    private LinearLayout walkerInfo;
+    private ImageView walkerProfileImage;
+    private TextView walkerNameField, walkerPhoneField;
+    private String name, phone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +91,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        walkerInfo = (LinearLayout) findViewById(R.id.walkerInfo);
+        walkerProfileImage = (ImageView) findViewById(R.id.walkerProfileImage);
+        walkerNameField = (TextView) findViewById(R.id.walkerName);
+        walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
 
 
         requestButton = (Button) findViewById(R.id.requestButton);
@@ -87,7 +109,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         walkerLocationRef.removeEventListener(walkerLocationListener);
 
                         if(walkerFoundID != null){
-                            DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("drivers").child(walkerFoundID);
+                            DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
                             walkerRef.setValue(true);
                             walkerFoundID = null;
                         }
@@ -103,6 +125,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                             pickupMarker.remove();
                         }
                         requestButton.setText("Request walker");
+
+                        walkerInfo.setVisibility(View.GONE);
+                        walkerNameField.setText("");
+                        walkerPhoneField.setText("");
+                        walkerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
                     }else {
                         requestBol = true;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -117,6 +144,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         requestButton.setText("Getting your walker...");
 
                         getClostestWalkerAvailable();
+
                     }
                 }
             }
@@ -156,6 +184,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     walkerRef.updateChildren(map);
 
                     getWalkerLocation();
+                    getWalkerInfo();
                     requestButton.setText("Looking for walker location...");
                 }
 
@@ -188,6 +217,61 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
+    }
+
+    public void getWalkerInfo(){
+        walkerInfo.setVisibility(View.VISIBLE);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+
+                    name = dataSnapshot.child("name").getValue().toString();
+                    phone = dataSnapshot.child("phone").getValue().toString();
+
+                    if(name != null) {
+                        walkerNameField.setText(name);
+                    }
+
+                    if(phone != null) {
+                        walkerPhoneField.setText(phone);
+                    }
+
+                    storageReference = FirebaseStorage.getInstance().getReference();
+                    storageReference.child("images/"+walkerFoundID).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(OwnerMapActivity.this).load(uri).into(walkerProfileImage);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
+
+                   /* Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("name") != null){
+                        name = map.get("name").toString();
+                        nameField.setText(name);
+                    }
+
+                    if(map.get("phone") != null){
+                        phone = map.get("phone").toString();
+                        phoneField.setText(phone);
+                    } */
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private Marker walkerMarker;

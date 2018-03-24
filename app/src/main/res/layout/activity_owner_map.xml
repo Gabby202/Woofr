@@ -14,6 +14,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.example.gabby.dogapp.WalkerMapActivity" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation = "vertical"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id= "@+id/walkerInfo"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="100sp"
+                android:layout_height="100sp"
+                android:id = "@+id/walkerProfileImage"
+                android:padding="20sp"
+                android:src= "@mipmap/ic_person_black_24dp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="40sp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id = "@+id/walkerName"
+                    android:paddingBottom="10sp"
+                    android:paddingTop="20sp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id = "@+id/walkerPhone"
+                    android:paddingBottom="10sp"
+                    android:paddingTop="20sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
 
     <Button
         android:id="@+id/requestButton"
@@ -21,5 +66,6 @@
         android:layout_height="wrap_content"
         android:text="Request Walker"
         android:layout_gravity="bottom"/>
+    </LinearLayout>
 
 </FrameLayout>
