@@ -60,7 +60,9 @@
             android:name=".WalkerMapActivity"
             android:label="@string/title_activity_walker_map" />
         <activity android:name=".OwnerMapActivity" />
-        <activity android:name=".EditUserDetailsActivity"></activity>
+        <activity android:name=".EditUserDetailsActivity" />
+        <activity android:name=".utils.TestActivity" />
+        <activity android:name=".TestActivity"></activity>
     </application>
 
 </manifest>
