@@ -17,7 +17,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/awaitReq"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Awaiting request..."
@@ -37,7 +37,7 @@
         android:layout_gravity="bottom"
         android:orientation="horizontal"
         android:background="@android:color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="100sp"
@@ -45,13 +45,20 @@
             android:id = "@+id/ownerProfileImage"
             android:padding="20sp"
             android:src= "@mipmap/ic_person_black_24dp"/>
-        
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="40sp">
-                
+                <TextView
+                    android:id="@+id/ownerDestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner Destination --"
+                    android:paddingBottom="10sp"
+                    android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -70,10 +77,10 @@
 
 
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/walkStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="Status"
         android:layout_gravity="bottom"/>
     </LinearLayout>
 

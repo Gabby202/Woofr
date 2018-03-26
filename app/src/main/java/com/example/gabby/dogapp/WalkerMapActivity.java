@@ -74,7 +74,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationRequest locationRequest;
     LocationManager locationManager;
     String provider;
-    private Button cancelButton;
+    private Button cancelButton, walkStatus;
     private String ownerID = "";
     private LatLng pickupLatLng;
 
@@ -82,11 +82,15 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     StorageReference storageReference = storage.getReference();
     private LinearLayout ownerInfo;
     private ImageView ownerProfileImage;
-    private TextView ownerNameField, ownerPhoneField;
-    private String name, phone;
+    private TextView ownerNameField, ownerPhoneField, ownerDestination;
+    private String name;
+    private String phone;
+    private TextView awaitReq;
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.colorAccent};
-
+    private int status = 0;
+    private String destination;
+    private LatLng destinationLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,23 +109,45 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         ownerProfileImage = (ImageView) findViewById(R.id.ownerProfileImage);
         ownerNameField = (TextView) findViewById(R.id.ownerName);
         ownerPhoneField = (TextView) findViewById(R.id.ownerPhone);
-
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        awaitReq = (TextView) findViewById(R.id.awaitReq);
+        ownerDestination = (TextView) findViewById(R.id.ownerDestination);
+        walkStatus = (Button) findViewById(R.id.walkStatus);
+        walkStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v == cancelButton) {
-                    String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerWalkID");
-                    ref.removeValue();
-                    displayMessage();
-                    finish();
-                    onStop();
-                    System.exit(0);
-
+                switch(status) {
+                    case 1: //walker on way to pickup dog
+                        status = 2;
+                        erasePolyLines();
+                        if(destinationLatLng.latitude != 0.0 && destinationLatLng.longitude != 0.0) {
+                            getRouteToMarker(destinationLatLng);
+                        }
+                        walkStatus.setText("Walk Completed");
+                        break;
+                    case 2: //walker has dog on way to destination
+                        endRide();
+                        break;
                 }
             }
         });
+
+
+
+//        cancelButton = (Button) findViewById(R.id.cancelButton);
+//        cancelButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (v == cancelButton) {
+//                    String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerWalkID");
+//                    ref.removeValue();
+//                    displayMessage();
+//                    finish();
+//                    onStop();
+//                    System.exit(0);
+//                }
+//            }
+//        });
 
         getAssignedOwner();
 
@@ -131,28 +157,57 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private void getAssignedOwner(){
         String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerWalkID");
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerRequest").child("ownerWalkID");
         assignedWalkerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
+                        status = 1;
                         ownerID = dataSnapshot.getValue().toString();
                         getAssignedOwnerPickupLocation();
+                        getAssignedOwnerDestination();
                         getAssignedOwnerInfo();
+
+                    awaitReq.setText("Owner Found!");
                 }else{
-                    erasePolyLines();
-                    ownerID = "";
-                    if(pickupMarker !=null){
-                        pickupMarker.remove();
+                    endRide();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getAssignedOwnerDestination(){
+        String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference assignedWalkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerID).child("ownerRequest");
+        assignedWalkerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                    if(map.get("destination")!=null) {
+                        destination = map.get("destination").toString();
+                        ownerDestination.setText("Destination : " + destination);
                     }
-                    if(assignedOwnerPickupLocationRefListener != null){
-                        assignedWalkerPickupLocationRef.removeEventListener(assignedOwnerPickupLocationRefListener);
+                    else {
+                        ownerDestination.setText("Destination: --");
                     }
 
-                    ownerInfo.setVisibility(View.GONE);
-                    ownerNameField.setText("");
-                    ownerPhoneField.setText("");
-                    ownerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+                    Double destinationLat = 0.0;
+                    Double destinationLng = 0.0;
+
+                    if(map.get("destinationLat") != null) {
+                        destinationLat = Double.valueOf(map.get("destinationLat").toString());
+                    }
+                    if(map.get("destinationLng") != null) {
+                        destinationLng = Double.valueOf(map.get("destinationLng").toString());
+                        destinationLatLng = new LatLng(destinationLat, destinationLng);
+                    }
 
                 }
 
@@ -172,7 +227,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
-
+                    Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     name = dataSnapshot.child("name").getValue().toString();
                     phone = dataSnapshot.child("phone").getValue().toString();
 
@@ -524,4 +579,35 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         }
         polylines.clear();
     }
+
+    private void endRide () {
+        walkStatus.setText("Picked Dog");
+        erasePolyLines();
+
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId).child("ownerRequest");
+        walkerRef.removeValue();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(ownerID);
+        ownerID = "";
+
+        //if marker doesn't exist the app may crash
+        if (pickupMarker != null) {
+            pickupMarker.remove();
+        }
+        if(assignedOwnerPickupLocationRefListener != null){
+            assignedWalkerPickupLocationRef.removeEventListener(assignedOwnerPickupLocationRefListener);
+        }
+        ownerInfo.setVisibility(View.GONE);
+        ownerNameField.setText("");
+        ownerPhoneField.setText("");
+        ownerDestination.setText("Destination : --");
+        ownerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+        awaitReq.setText("Awaiting Request...");
+
+
+    }
+
 }

@@ -27,8 +27,12 @@ import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,6 +52,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.Manifest;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -66,11 +71,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     LocationManager locationManager;
     String provider;
     private Button requestButton;
-
-    private LatLng pickupLocation;
-
+    private LatLng pickupLocation, destinationLatLng;
     private boolean requestBol = false;
-
     private Marker pickupMarker;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -80,6 +82,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private ImageView walkerProfileImage;
     private TextView walkerNameField, walkerPhoneField;
     private String name, phone;
+    private String destination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +99,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerProfileImage = (ImageView) findViewById(R.id.walkerProfileImage);
         walkerNameField = (TextView) findViewById(R.id.walkerName);
         walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
-
+        destinationLatLng = new LatLng(0.0,0.0);
 
         requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
@@ -104,32 +107,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             public void onClick(View v) {
                 if (v == requestButton) {
                     if(requestBol){
-                        requestBol = false;
-                        geoQuery.removeAllListeners();
-                        walkerLocationRef.removeEventListener(walkerLocationListener);
-
-                        if(walkerFoundID != null){
-                            DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
-                            walkerRef.setValue(true);
-                            walkerFoundID = null;
-                        }
-                        walkerFound = false;
-                        radius = 1;
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
-                        GeoFire geoFire = new GeoFire(ref);
-                        geoFire.removeLocation(userId);
-
-                        //if marker doesn't exist the app may crash
-                        if(pickupMarker != null){
-                            pickupMarker.remove();
-                        }
-                        requestButton.setText("Request walker");
-
-                        walkerInfo.setVisibility(View.GONE);
-                        walkerNameField.setText("");
-                        walkerPhoneField.setText("");
-                        walkerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+                        endRide();
                     }else {
                         requestBol = true;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -150,8 +128,24 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
 
+
         provider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                destination = place.getName().toString();
+                destinationLatLng = place.getLatLng();
+            }
+
+            @Override
+            public void onError(Status status) {
+            }
+        });
     }
 
     private int radius = 1;
@@ -175,17 +169,22 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     System.out.println("walker found id" + key + " ============================================== key");
                     //if walker was found within the radius their userID will be stored in the DB. This lets us keep track of available walkers and working walkers.
-                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
+                    DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID).child("ownerRequest");
                     String ownerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     HashMap map = new HashMap();
 
                     //updates the DB
                     map.put("ownerWalkID", ownerID);
+                    map.put("destination", destination);
+                    map.put("destinationLat", destinationLatLng.latitude);
+                    map.put("destinationLng", destinationLatLng.longitude);
+
                     walkerRef.updateChildren(map);
 
                     getWalkerLocation();
                     getWalkerInfo();
-                    requestButton.setText("Looking for walker location...");
+                    getHasRideEnded();
+                    requestButton.setText("Looking for walker...");
                 }
 
 
@@ -265,6 +264,30 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
 
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+    private DatabaseReference walkHasEndedRef;
+    private ValueEventListener walkHasEndedRefListener;
+    private void getHasRideEnded(){
+        String walkerID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        walkHasEndedRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID).child("ownerRequest").child("ownerWalkID");
+        walkHasEndedRefListener = walkHasEndedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+
+                }else{
+                    endRide();
+                }
+
             }
 
             @Override
@@ -505,6 +528,37 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
+    private void endRide () {
+        requestBol = false;
+        geoQuery.removeAllListeners();
+        walkerLocationRef.removeEventListener(walkerLocationListener);
+        walkHasEndedRef.removeEventListener(walkHasEndedRefListener);
+
+            if (walkerFoundID != null) {
+                DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID).child("ownerRequest");
+                walkerRef.removeValue();
+                walkerFoundID = null;
+            }
+        walkerFound = false;
+        radius = 1;
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userId);
+
+            //if marker doesn't exist the app may crash
+        if (pickupMarker != null) {
+            pickupMarker.remove();
+        }
+        requestButton.setText("Request walker");
+
+        walkerInfo.setVisibility(View.GONE);
+        walkerNameField.setText("");
+        walkerPhoneField.setText("");
+        walkerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+        finish();
+        startActivity(new Intent(this, HomeActivity.class));
+    }
 
 
 }
