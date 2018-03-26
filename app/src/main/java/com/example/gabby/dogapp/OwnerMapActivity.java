@@ -277,6 +277,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private Marker walkerMarker;
     private DatabaseReference walkerLocationRef;
     private ValueEventListener walkerLocationListener;
+
 //gets the location of the walker once they have been requested
     private void getWalkerLocation(){
         walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child(walkerFoundID).child("l"); //the child l is used by location services to store long and lang values
@@ -318,6 +319,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     if(distance < 100){
                         requestButton.setText("Walker is here! "); //notifies dog owner the walker is here
+
                     }else {
                         requestButton.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
                     }
@@ -485,7 +487,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                 } else {
 
-                    // permission denied, boo! Disable the
+                    // permission denied! Disable the
                     // functionality that depends on this permission.
 
                 }

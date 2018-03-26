@@ -524,4 +524,6 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         }
         polylines.clear();
     }
+
+
 }

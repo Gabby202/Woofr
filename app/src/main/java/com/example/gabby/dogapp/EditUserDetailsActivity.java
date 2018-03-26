@@ -220,6 +220,7 @@ public class EditUserDetailsActivity extends AppCompatActivity {
             progressDialog.show();
             FirebaseUser user = firebaseAuth.getCurrentUser();
 
+
             StorageReference ref = storageReference.child("images/"+ user.getUid().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
