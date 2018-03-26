@@ -3,6 +3,7 @@ package com.example.gabby.dogapp;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,7 +17,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -27,7 +32,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +40,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         firebaseAuth = FirebaseAuth.getInstance();
         //checks if user is already logged in
         if(firebaseAuth.getCurrentUser() != null) {
-            //start profile activity
+//          start profile activity
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.putExtra("ownerOrWalker", "walker");
+                        System.out.println("LOGGED IN AS WALKER =================== ");
+                        startActivity(intent);
+
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.putExtra("ownerOrWalker", "owner");
+                        System.out.println("LOGGED IN AS OWNER =================== ");
+                        startActivity(intent);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
             finish();
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+
         }
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener(this);
@@ -79,12 +106,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         progressDialog.dismiss();
-
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        System.out.println("USER: " + userId + " IS THE CURRENT USER LOGGIN IN ===================");
                         if(task.isSuccessful()) {
-                            
-                            //start profile activity
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+                            ref.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                //start profile activity
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        intent.putExtra("ownerOrWalker", "walker");
+                                        System.out.println("LOGGING IN AS WALKER =================== ");
+                                        startActivity(intent);
+
+                                    } else {
+                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        intent.putExtra("ownerOrWalker", "owner");
+                                        System.out.println("LOGGING IN AS OWNER =================== ");
+                                        startActivity(intent);
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                             finish();
-                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         }
                     }
                 });

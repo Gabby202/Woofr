@@ -16,6 +16,12 @@ import com.example.gabby.dogapp.ProfileActivity;
 import com.example.gabby.dogapp.R;
 import com.example.gabby.dogapp.SearchActivity;
 import com.example.gabby.dogapp.WalkerMapActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.security.acl.Owner;
@@ -39,8 +45,30 @@ public class BottomNavigationViewHelper {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
-                    case R.id.ic_house: Intent intent1 = new Intent(context, HomeActivity.class);
-                        context.startActivity(intent1);
+                    case R.id.ic_house:
+
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+                        ref.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    Intent intent = new Intent(context, HomeActivity.class);
+                                    intent.putExtra("ownerOrWalker", "walker");
+                                    System.out.println("NAVIGATING HOME AS WALKER =================== ");
+                                    context.startActivity(intent);
+                                } else {
+                                    Intent intent = new Intent(context, HomeActivity.class);
+                                    intent.putExtra("ownerOrWalker", "owner");
+                                    System.out.println("NAVIGATING HOME AS OWNER =================== ");
+                                    context.startActivity(intent);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                         break;
                     case R.id.ic_search: Intent intent2 = new Intent(context, MapRedirectActivity.class);
                         context.startActivity(intent2);

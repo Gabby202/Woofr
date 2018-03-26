@@ -169,7 +169,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
             uploadImage();
             finish();
 
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
 
 
         }

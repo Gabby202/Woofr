@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,11 @@ import com.example.gabby.dogapp.historyRecyclerView.HistoryViewHolders;
 import com.example.gabby.dogapp.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
@@ -31,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView historyRecyclerView;
     private RecyclerView.Adapter historyAdapter;
     private RecyclerView.LayoutManager historyLayoutManager;
+    private String ownerOrWalker, userId, whoIsLoggedIn;
 
     //variable delcarations
     private TextView welcomeTextView;
@@ -39,6 +46,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        whoIsLoggedIn = getIntent().getExtras().getString("ownerOrWalker");
+        System.out.println("Home Activity started as " + whoIsLoggedIn + "=========================================");
         //removes weird animation when changing activity
         this.overridePendingTransition(0, 0);
         Log.d(TAG, "onCreate: starting.");
@@ -62,11 +72,9 @@ public class HomeActivity extends AppCompatActivity {
         historyAdapter = new HistoryAdapter(getDataSetHistory(), HomeActivity.this);
         historyRecyclerView.setAdapter(historyAdapter);
 
-        for(int i = 0; i < 100; i++) {
-            HistoryObject obj = new HistoryObject(Integer.toString(i));
-            resultsHistory.add(obj);
-        }
-        historyAdapter.notifyDataSetChanged();
+        ownerOrWalker = getIntent().getExtras().getString("ownerOrWalker");
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        getUserHistoryIds();
 
         setupBottomNavigationView();
 
@@ -76,6 +84,47 @@ public class HomeActivity extends AppCompatActivity {
 //        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
         //sets text of textview to this, gets user email and appends to string
 //        welcomeTextView.setText("Welcome " + user.getEmail().toString().trim());
+    }
+
+    private void getUserHistoryIds() {
+        DatabaseReference userHistoryDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(ownerOrWalker + "s").child(userId).child("history");
+        userHistoryDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    for(DataSnapshot history : dataSnapshot.getChildren()) {
+                        FetchRideInformation(history.getKey());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void FetchRideInformation(String walkKey) {
+        DatabaseReference historyDatabase = FirebaseDatabase.getInstance().getReference().child("history").child(walkKey);
+        historyDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    String walkId = dataSnapshot.getKey();
+                    HistoryObject obj = new HistoryObject(walkId);
+                    resultsHistory.add(obj);
+                    historyAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private ArrayList resultsHistory = new ArrayList<HistoryObject>();
