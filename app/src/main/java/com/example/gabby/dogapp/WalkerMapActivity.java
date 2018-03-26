@@ -63,6 +63,7 @@ import android.widget.Toast;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,6 +126,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         walkStatus.setText("Walk Completed");
                         break;
                     case 2: //walker has dog on way to destination
+                        recordWalk();
                         endRide();
                         break;
                 }
@@ -581,7 +583,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void endRide () {
-        walkStatus.setText("Picked Dog");
+        walkStatus.setText("Picked up dog");
         erasePolyLines();
 
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -607,6 +609,24 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         ownerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
         awaitReq.setText("Awaiting Request...");
 
+
+    }
+
+    //get unique id for each walk, record history
+    private void recordWalk() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId).child("history");
+        DatabaseReference ownerRef = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID).child("history");
+        DatabaseReference historyRef = FirebaseDatabase.getInstance().getReference().child("history");
+        String requestId = historyRef.push().getKey();
+        walkerRef.child(requestId).setValue(true);
+        ownerRef.child(requestId).setValue(true);
+
+        HashMap map = new HashMap();
+        map.put("walker", userId);
+        map.put("owner", ownerID);
+        map.put("rating", 0);
+        historyRef.child(requestId).updateChildren(map);
 
     }
 
