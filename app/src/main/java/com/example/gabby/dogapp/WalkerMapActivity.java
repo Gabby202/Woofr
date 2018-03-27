@@ -641,8 +641,14 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         map.put("walker", userId);
         map.put("owner", ownerID);
         map.put("rating", 0);
+        map.put("timestamp", getCurrentTimestamp());
         historyRef.child(requestId).updateChildren(map);
 
+    }
+
+    private Long getCurrentTimestamp() {
+        Long timestamp = System.currentTimeMillis()/1000;
+        return timestamp;
     }
 
 }

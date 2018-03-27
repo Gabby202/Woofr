@@ -12,12 +12,13 @@ import com.example.gabby.dogapp.R;
 
 public class HistoryViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    public TextView walkId;
+    public TextView walkId, time;
     public HistoryViewHolders(View itemView) {
         super(itemView);
         itemView.setOnClickListener(this);
 
         walkId = (TextView) itemView.findViewById(R.id.walkId);
+        time = (TextView) itemView.findViewById(R.id.time);
     }
 
     @Override

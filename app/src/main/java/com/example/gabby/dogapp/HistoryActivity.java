@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -25,7 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 public class HistoryActivity extends AppCompatActivity {
@@ -111,7 +114,13 @@ public class HistoryActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     String walkId = dataSnapshot.getKey();
-                    HistoryObject obj = new HistoryObject(walkId);
+                    Long timestamp = 0L;
+                    for(DataSnapshot child: dataSnapshot.getChildren()){
+                        if(child.getKey().equals("timestamp")){
+                            timestamp = Long.valueOf(child.getValue().toString());
+                        }
+                    }
+                    HistoryObject obj = new HistoryObject(walkId, getDate(timestamp));
                     resultsHistory.add(obj);
                     historyAdapter.notifyDataSetChanged();
 
@@ -124,6 +133,14 @@ public class HistoryActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private String getDate(Long timestamp) {
+        Calendar cal = Calendar.getInstance(Locale.getDefault());
+        cal.setTimeInMillis(timestamp*1000);
+
+        String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
+        return date;
     }
 
     private ArrayList resultsHistory = new ArrayList<HistoryObject>();
