@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gabby.dogapp.HomeActivity"
+    tools:context="com.example.gabby.dogapp.HistoryActivity"
     android:id="@+id/drawerLayout"
     android:fitsSystemWindows="true">
 
@@ -19,17 +19,16 @@
             android:id="@+id/relLayout1">
 
             <include layout="@layout/layout_top_tabs"/>
+
             <TextView
                 android:id="@+id/titleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="Home "
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Transaction History"
                 android:textAlignment="center"
                 android:textSize="32sp" />
-
         </RelativeLayout>
 
         <!-- middle section (body)-->
@@ -39,32 +38,22 @@
             android:id="@+id/relLayout2"
             android:layout_below="@+id/relLayout1">
 
-
-
-            <Button
-                android:layout_marginTop="10sp"
-
-                android:layout_width="match_parent"
-                android:layout_height="100sp"
-                android:id="@+id/historyButton"
-                android:text="Transaction History"
-                android:background="@color/colorAccent"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-
-                />
             <include layout="@layout/layout_center_viewpager"/>
-            <Button
-                android:layout_marginTop="10sp"
-                android:layout_below="@id/historyButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100sp"
-                android:id="@+id/topRatedButton"
-                android:text="Top Rated Users"
-                android:textSize="15sp"
-                android:background="@color/colorAccent"
-                android:textColor="@color/white"/>
-            <include layout="@layout/layout_center_viewpager"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/historyRecyclerView"
+                        android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+                </android.support.v4.widget.NestedScrollView>
+
+            </LinearLayout>
 
 
 

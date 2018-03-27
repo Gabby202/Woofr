@@ -45,30 +45,8 @@ public class BottomNavigationViewHelper {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()) {
-                    case R.id.ic_house:
-
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
-                        ref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.exists()) {
-                                    Intent intent = new Intent(context, HomeActivity.class);
-                                    intent.putExtra("ownerOrWalker", "walker");
-                                    System.out.println("NAVIGATING HOME AS WALKER =================== ");
-                                    context.startActivity(intent);
-                                } else {
-                                    Intent intent = new Intent(context, HomeActivity.class);
-                                    intent.putExtra("ownerOrWalker", "owner");
-                                    System.out.println("NAVIGATING HOME AS OWNER =================== ");
-                                    context.startActivity(intent);
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                    case R.id.ic_house: Intent intent = new Intent(context, HomeActivity.class);
+                        context.startActivity(intent);
                         break;
                     case R.id.ic_search: Intent intent2 = new Intent(context, MapRedirectActivity.class);
                         context.startActivity(intent2);

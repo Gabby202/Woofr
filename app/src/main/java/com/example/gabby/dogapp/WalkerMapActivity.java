@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -86,7 +87,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private TextView ownerNameField, ownerPhoneField, ownerDestination;
     private String name;
     private String phone;
-    private TextView awaitReq;
+    private Button awaitReq;
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.colorAccent};
     private int status = 0;
@@ -110,9 +111,24 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         ownerProfileImage = (ImageView) findViewById(R.id.ownerProfileImage);
         ownerNameField = (TextView) findViewById(R.id.ownerName);
         ownerPhoneField = (TextView) findViewById(R.id.ownerPhone);
-        awaitReq = (TextView) findViewById(R.id.awaitReq);
+        awaitReq = (Button) findViewById(R.id.awaitReq);
         ownerDestination = (TextView) findViewById(R.id.ownerDestination);
         walkStatus = (Button) findViewById(R.id.walkStatus);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("walkersAvailable");
+                ref.removeValue();
+                ref = FirebaseDatabase.getInstance().getReference().child("walkersWorking");
+                ref.removeValue();
+                endRide();
+                finish();
+                onStop();
+                System.exit(0);
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            }
+        });
         walkStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,6 +187,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         getAssignedOwnerInfo();
 
                     awaitReq.setText("Owner Found!");
+
                 }else{
                     endRide();
                 }
@@ -583,13 +600,12 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void endRide () {
-        walkStatus.setText("Picked up dog");
         erasePolyLines();
-
+        awaitReq.setText("Awaiting Request...");
+        walkStatus.setText("Picked up dog");
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference walkerRef = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId).child("ownerRequest");
         walkerRef.removeValue();
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(ownerID);
@@ -607,7 +623,6 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         ownerPhoneField.setText("");
         ownerDestination.setText("Destination : --");
         ownerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
-        awaitReq.setText("Awaiting Request...");
 
 
     }

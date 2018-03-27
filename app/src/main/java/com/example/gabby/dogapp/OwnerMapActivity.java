@@ -70,7 +70,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     LocationRequest locationRequest;
     LocationManager locationManager;
     String provider;
-    private Button requestButton;
+    private Button requestButton, statusText;
     private LatLng pickupLocation, destinationLatLng;
     private boolean requestBol = false;
     private Marker pickupMarker;
@@ -99,6 +99,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerProfileImage = (ImageView) findViewById(R.id.walkerProfileImage);
         walkerNameField = (TextView) findViewById(R.id.walkerName);
         walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
+        statusText = (Button) findViewById(R.id.statusText);
         destinationLatLng = new LatLng(0.0,0.0);
 
         requestButton = (Button) findViewById(R.id.requestButton);
@@ -119,7 +120,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         pickupLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
                         pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
 
-                        requestButton.setText("Getting your walker...");
+                        statusText.setText("Finding a walker...");
+                        requestButton.setText("Cancel");
 
                         getClostestWalkerAvailable();
 
@@ -184,7 +186,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     getWalkerLocation();
                     getWalkerInfo();
                     getHasRideEnded();
-                    requestButton.setText("Looking for walker...");
+                    statusText.setText("Finding a walker...");
+                    requestButton.setText("Cancel");
                 }
 
 
@@ -311,7 +314,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     double LocationLat = 0;
                     double LocationLng = 0;
 
-                    requestButton.setText("Walker Found!");
+                    statusText.setText("Walker Found!");
 
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
@@ -340,9 +343,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     float distance = loc1.distanceTo(loc2); //finds distance between the two locations
 
                     if(distance < 100){
-                        requestButton.setText("Walker is here! "); //notifies dog owner the walker is here
+                        statusText.setText("Walker is here! "); //notifies dog owner the walker is here
                     }else {
-                        requestButton.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
+                        statusText.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
                     }
 
                 }

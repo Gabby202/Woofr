@@ -44,6 +44,8 @@
         <activity android:name=".NotifsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".MapRedirectActivity" />
+        <activity android:name=".HistoryActivity"/>
+        <activity android:name=".HistoryRedirectActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -61,8 +63,7 @@
             android:label="@string/title_activity_walker_map" />
         <activity android:name=".OwnerMapActivity" />
         <activity android:name=".EditUserDetailsActivity" />
-        <activity android:name=".utils.TestActivity" />
-        <activity android:name=".TestActivity"></activity>
+
     </application>
 
 </manifest>

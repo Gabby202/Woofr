@@ -1,6 +1,7 @@
 package com.example.gabby.dogapp;
 
 import android.content.Intent;
+import android.sax.StartElementListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.gabby.dogapp.historyRecyclerView.HistoryAdapter;
@@ -28,27 +31,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUMBER = 0;
     //========================== Firebase stuff ===========================================
     private FirebaseAuth firebaseAuth;
-    private RecyclerView historyRecyclerView;
-    private RecyclerView.Adapter historyAdapter;
-    private RecyclerView.LayoutManager historyLayoutManager;
-    private String ownerOrWalker, userId, whoIsLoggedIn;
 
     //variable delcarations
     private TextView welcomeTextView;
-
+    private Button historyButton, topRatedButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        whoIsLoggedIn = getIntent().getExtras().getString("ownerOrWalker");
-        System.out.println("Home Activity started as " + whoIsLoggedIn + "=========================================");
         //removes weird animation when changing activity
         this.overridePendingTransition(0, 0);
         Log.d(TAG, "onCreate: starting.");
@@ -63,18 +60,10 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-
-        historyRecyclerView = (RecyclerView) findViewById(R.id.historyRecyclerView);
-        historyRecyclerView.setNestedScrollingEnabled(false);
-        historyRecyclerView.setHasFixedSize(true);
-        historyLayoutManager = new LinearLayoutManager(HomeActivity.this);
-        historyRecyclerView.setLayoutManager(historyLayoutManager);
-        historyAdapter = new HistoryAdapter(getDataSetHistory(), HomeActivity.this);
-        historyRecyclerView.setAdapter(historyAdapter);
-
-        ownerOrWalker = getIntent().getExtras().getString("ownerOrWalker");
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        getUserHistoryIds();
+        historyButton = (Button) findViewById(R.id.historyButton);
+        historyButton.setOnClickListener(this);
+        topRatedButton = (Button) findViewById(R.id.topRatedButton);
+        topRatedButton.setOnClickListener(this);
 
         setupBottomNavigationView();
 
@@ -86,51 +75,6 @@ public class HomeActivity extends AppCompatActivity {
 //        welcomeTextView.setText("Welcome " + user.getEmail().toString().trim());
     }
 
-    private void getUserHistoryIds() {
-        DatabaseReference userHistoryDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(ownerOrWalker + "s").child(userId).child("history");
-        userHistoryDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    for(DataSnapshot history : dataSnapshot.getChildren()) {
-                        FetchRideInformation(history.getKey());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private void FetchRideInformation(String walkKey) {
-        DatabaseReference historyDatabase = FirebaseDatabase.getInstance().getReference().child("history").child(walkKey);
-        historyDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
-                    String walkId = dataSnapshot.getKey();
-                    HistoryObject obj = new HistoryObject(walkId);
-                    resultsHistory.add(obj);
-                    historyAdapter.notifyDataSetChanged();
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private ArrayList resultsHistory = new ArrayList<HistoryObject>();
-    private ArrayList<HistoryObject> getDataSetHistory() {
-        return resultsHistory;
-    }
 
     /**
      * Bottom navigation view setup
@@ -145,5 +89,38 @@ public class HomeActivity extends AppCompatActivity {
         menuItem.setChecked(true);
     }
 
+    @Override
+    public void onClick(View v) {
+
+        if(v == historyButton) {
+
+            startActivity(new Intent(getApplicationContext(), HistoryRedirectActivity.class));
+
+//            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+//            ref.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    if (dataSnapshot.exists()) {
+//                        Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+//                        intent.putExtra("ownerOrWalker", "walker");
+//                        System.out.println("NAVIGATING TO HISTORY AS WALKER =================== ");
+//                        startActivity(intent);
+//                    } else {
+//                        Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+//                        intent.putExtra("ownerOrWalker", "owner");
+//                        System.out.println("NAVIGATING TO HISTORY AS OWNER =================== ");
+//                        startActivity(intent);
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
+        }
+
+        //TODO topRatedButton
+    }
 }
 

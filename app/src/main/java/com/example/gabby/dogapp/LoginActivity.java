@@ -41,29 +41,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //checks if user is already logged in
         if(firebaseAuth.getCurrentUser() != null) {
 //          start profile activity
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.putExtra("ownerOrWalker", "walker");
-                        System.out.println("LOGGED IN AS WALKER =================== ");
-                        startActivity(intent);
+//            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+//            ref.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    if (dataSnapshot.exists()) {
+//                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                        intent.putExtra("ownerOrWalker", "walker");
+//                        System.out.println("LOGGED IN AS WALKER =================== ");
+//                        startActivity(intent);
+//
+//                    } else {
+//                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                        intent.putExtra("ownerOrWalker", "owner");
+//                        System.out.println("LOGGED IN AS OWNER =================== ");
+//                        startActivity(intent);
+//                    }
+//                }
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//
+//                }
+//            });
 
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.putExtra("ownerOrWalker", "owner");
-                        System.out.println("LOGGED IN AS OWNER =================== ");
-                        startActivity(intent);
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             finish();
 
         }
@@ -109,29 +111,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         System.out.println("USER: " + userId + " IS THE CURRENT USER LOGGIN IN ===================");
                         if(task.isSuccessful()) {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
-                            ref.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                //start profile activity
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                        intent.putExtra("ownerOrWalker", "walker");
-                                        System.out.println("LOGGING IN AS WALKER =================== ");
-                                        startActivity(intent);
+//                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
+//                            ref.addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                //start profile activity
+//                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                    if (dataSnapshot.exists()) {
+//                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                                        intent.putExtra("ownerOrWalker", "walker");
+//                                        System.out.println("LOGGING IN AS WALKER =================== ");
+//                                        startActivity(intent);
+//
+//                                    } else {
+//                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                                        intent.putExtra("ownerOrWalker", "owner");
+//                                        System.out.println("LOGGING IN AS OWNER =================== ");
+//                                        startActivity(intent);
+//                                    }
+//                                }
+//                                @Override
+//                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                }
+//                            });
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
-                                    } else {
-                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                        intent.putExtra("ownerOrWalker", "owner");
-                                        System.out.println("LOGGING IN AS OWNER =================== ");
-                                        startActivity(intent);
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
                             finish();
                         }
                     }
