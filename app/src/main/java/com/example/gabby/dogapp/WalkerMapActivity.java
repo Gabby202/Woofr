@@ -642,6 +642,12 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         map.put("owner", ownerID);
         map.put("rating", 0);
         map.put("timestamp", getCurrentTimestamp());
+        map.put("destination", destination);
+        map.put("location/from/lat", pickupLatLng.latitude); //creates child within child, like a path
+        map.put("location/from/lng", pickupLatLng.longitude);
+
+        map.put("location/to/lat", destinationLatLng.latitude);
+        map.put("location/to/lng", destinationLatLng.longitude);
         historyRef.child(requestId).updateChildren(map);
 
     }
