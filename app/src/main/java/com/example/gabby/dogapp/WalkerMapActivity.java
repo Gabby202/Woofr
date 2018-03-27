@@ -610,6 +610,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         awaitReq.setText("Awaiting Request...");
 
 
+
+
     }
 
     //get unique id for each walk, record history

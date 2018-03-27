@@ -557,7 +557,6 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerPhoneField.setText("");
         walkerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
         finish();
-        startActivity(new Intent(this, HomeActivity.class));
     }
 
 
