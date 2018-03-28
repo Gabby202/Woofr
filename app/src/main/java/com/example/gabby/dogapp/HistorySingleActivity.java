@@ -15,10 +15,14 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -118,7 +122,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                         }
 
                         if(child.getKey().equals("destination")) {
-                            walkLocation.setText(getDate(Long.valueOf(child.getValue().toString())));
+                            walkLocation.setText(child.getValue().toString());
                         }
 
                         if(child.getKey().equals("location")) {
@@ -215,6 +219,22 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(pickupLatLng);
+        builder.include(destinationLatLng);
+        LatLngBounds bounds = builder.build();
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int padding = (int) (width*0.2);
+
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+        mMap.animateCamera(cameraUpdate);
+
+        mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
+        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination"));
+
         if(polylines.size()>0) {
             for (Polyline poly : polylines) {
                 poly.remove();
