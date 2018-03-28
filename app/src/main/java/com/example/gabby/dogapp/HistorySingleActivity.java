@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +60,8 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     private TextView userName;
     private TextView userPhone;
 
+    private RatingBar ratingBar;
+
     private ImageView userImage;
 
     private List<Polyline> polylines;
@@ -84,6 +88,8 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         userPhone = (TextView) findViewById(R.id.userPhone);
 
         userImage = (ImageView) findViewById(R.id.userImage);
+
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -113,12 +119,17 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                             if(!walkerId.equals(currentUserId)){
                                 userOwnerOrWalker = "owners";
                                 getOwnerInformation("walkers", walkerId);
+                                displayOwnerRelatedObjects();
                             }
 
                         }
 
                         if(child.getKey().equals("timestamp")) {
                             walkDate.setText(getDate(Long.valueOf(child.getValue().toString())));
+                        }
+
+                        if(child.getKey().equals("rating")) {
+                            ratingBar.setRating(Integer.valueOf(child.getValue().toString()));
                         }
 
                         if(child.getKey().equals("destination")) {
@@ -140,6 +151,18 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void displayOwnerRelatedObjects() {
+        ratingBar.setVisibility(View.VISIBLE);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                historyWalkInfoDb.child("rating").setValue(rating);
+                DatabaseReference walkerRatingDb = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerId).child("rating");
+                walkerRatingDb.child(walkId).setValue(rating);
             }
         });
     }
