@@ -57,6 +57,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -84,6 +85,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private String name, phone;
     private String destination;
 
+    private RatingBar ratingBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +103,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerNameField = (TextView) findViewById(R.id.walkerName);
         walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
         statusText = (Button) findViewById(R.id.statusText);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         destinationLatLng = new LatLng(0.0,0.0);
 
         requestButton = (Button) findViewById(R.id.requestButton);
@@ -223,7 +227,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     public void getWalkerInfo(){
         walkerInfo.setVisibility(View.VISIBLE);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -252,6 +256,19 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                             // Handle any errors
                         }
                     });
+
+                    int ratingSum = 0;
+                    float ratingsTotal = 0;
+                    float ratingAvg = 0;
+                    for(DataSnapshot child: dataSnapshot.child("rating").getChildren()){
+                        ratingSum = ratingSum + Integer.valueOf(child.getValue().toString());
+                        ratingsTotal++;
+                    }
+
+                    if(ratingsTotal != 0){
+                      ratingAvg = ratingSum / ratingsTotal;
+                      ratingBar.setRating(ratingAvg);
+                    }
 
                    /* Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     if(map.get("name") != null){
