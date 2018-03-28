@@ -28,6 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         //removes weird animation when changing activity
         this.overridePendingTransition(0, 0);
+        startService(new Intent(ProfileActivity.this, onAppKilled.class));
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
 

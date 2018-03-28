@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        startService(new Intent(RegisterActivity.this, onAppKilled.class));
         //get firebase authentication object
         firebaseAuth = FirebaseAuth.getInstance();
 

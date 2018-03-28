@@ -15,16 +15,40 @@
     android:layout_height="match_parent"
     tools:context="com.example.gabby.dogapp.WalkerMapActivity" />
 
-
-    <Button
-        android:id="@+id/awaitReq"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Awaiting request..."
-        android:textAlignment="center"
-        android:background="@color/cardview_dark_background"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/awaitReq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Awaiting request..."
+                android:textAlignment="center"
+                android:background="@color/cardview_dark_background"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_gravity="top"/>
+
+
+        </LinearLayout>
+        
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Working"
+            android:layout_margin="10sp"
+            android:id="@+id/workingSwitch"/>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,16 +113,17 @@
                 android:id="@+id/walkStatus"
                 android:background="@color/colorAccent"
                 android:textColor="@color/white"
-                android:text="Status"/>
+                android:text="Status" />
             <Button
+                android:layout_marginRight="1sp"
                 android:layout_weight="1"
-                android:layout_gravity="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/cancelButton"
                 android:background="@color/colorAccent"
                 android:textColor="@color/white"
-                android:id="@+id/cancelButton"
                 android:text="Cancel"/>
+            
         </LinearLayout>
     </LinearLayout>
 

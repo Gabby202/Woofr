@@ -46,6 +46,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        startService(new Intent(HomeActivity.this, onAppKilled.class));
+
         //removes weird animation when changing activity
         this.overridePendingTransition(0, 0);
         Log.d(TAG, "onCreate: starting.");

@@ -57,8 +57,10 @@ import android.Manifest;
 import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toast;
@@ -94,6 +96,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private String destination;
     private LatLng destinationLatLng;
 
+    private Switch workingSwitch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +110,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        startService(new Intent(WalkerMapActivity.this, onAppKilled.class));
+
 
         ownerInfo = (LinearLayout) findViewById(R.id.ownerInfo);
         ownerProfileImage = (ImageView) findViewById(R.id.ownerProfileImage);
@@ -113,6 +119,18 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         ownerPhoneField = (TextView) findViewById(R.id.ownerPhone);
         awaitReq = (Button) findViewById(R.id.awaitReq);
         ownerDestination = (TextView) findViewById(R.id.ownerDestination);
+
+        workingSwitch = (Switch) findViewById(R.id.workingSwitch);
+        workingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    connectWalker();
+                }else{
+                    disconnectWalker();
+                }
+            }
+        });
         walkStatus = (Button) findViewById(R.id.walkStatus);
         cancelButton = (Button) findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -432,6 +450,21 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         //accuracy can be changed to save battery/resources
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    private void connectWalker(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             /*
@@ -446,18 +479,15 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             return;
         }
 
-
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    private void disconnectWalker(){
+        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("walkersAvailable");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userId);
 
     }
 
@@ -536,16 +566,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
-    //remove walker from database if they close the app
-    protected void onStop() {
-        super.onStop();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("walkersAvailable");
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userId);
 
-
-    }
 
 
     @Override
