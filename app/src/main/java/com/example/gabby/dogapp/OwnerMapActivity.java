@@ -59,6 +59,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,6 +115,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     if(requestBol){
                         endRide();
                     }else {
+
                         requestBol = true;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -211,8 +213,24 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             //if walker not found within radius, radius goes up by 1 and method is called again to check for walker with the new radius
             public void onGeoQueryReady() {
                 if(!walkerFound){
-                    radius++;
-                    getClostestWalkerAvailable();
+                    if(radius <= 20) {
+                        radius++;
+                        getClostestWalkerAvailable();
+                    } else {
+
+                        Toast.makeText(OwnerMapActivity.this, "No walkers found...Please try again", Toast.LENGTH_LONG).show();
+                        if (pickupMarker != null) {
+                            pickupMarker.remove();
+                        }
+                        requestButton.setText("Request walker");
+                        requestBol = false;
+                        radius = 1;
+                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
+                        GeoFire geoFire = new GeoFire(ref);
+                        geoFire.removeLocation(userId);
+                    }
+
                 }
 
             }
