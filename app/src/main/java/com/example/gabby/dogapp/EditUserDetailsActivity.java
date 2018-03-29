@@ -48,6 +48,9 @@ public class EditUserDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_user_details);
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -81,9 +84,6 @@ public class EditUserDetailsActivity extends AppCompatActivity {
         });
 
 
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_user_details);
 
         nameField = (EditText) findViewById(R.id.name);
         phoneField = (EditText) findViewById(R.id.phone);

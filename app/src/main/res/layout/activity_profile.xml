@@ -18,6 +18,16 @@
             android:id="@+id/relLayout1">
 
             <include layout="@layout/layout_top_tabs"/>
+
+            <TextView
+                android:id="@+id/profileTextView"
+                android:layout_width="200sp"
+                android:layout_height="50sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="Profile"
+                android:textAlignment="center"
+                android:textSize="32sp" />
         </RelativeLayout>
 
         <!-- middle section (body)-->
@@ -29,66 +39,53 @@
 
             <include layout="@layout/layout_center_viewpager"/>
 
-            <TextView
-                android:id="@+id/profileTextView"
-                android:layout_width="200sp"
-                android:layout_height="50sp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="Profile"
-                android:textAlignment="center"
-                android:textSize="32sp" />
-
             <Button
                 android:id="@+id/logoutButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="66dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="49dp"
                 android:text="Logout" />
 
             <Button
+                android:layout_marginBottom="1dp"
                 android:id="@+id/editDetailsButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:textColor="@color/white"
+                android:textSize="15sp"
                 android:layout_above="@+id/logoutButton"
-                android:layout_alignEnd="@+id/logoutButton"
-                android:layout_alignLeft="@+id/logoutButton"
-                android:layout_alignRight="@+id/logoutButton"
-                android:layout_alignStart="@+id/logoutButton"
-                android:layout_marginBottom="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:text="Edit Details" />
 
-            <TextView
-                android:id="@+id/userNametextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/phoneNumbertextView"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="27dp"
-                android:text="TextView" />
-
-            <TextView
-                android:id="@+id/phoneNumbertextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/editDetailsButton"
-                android:layout_alignLeft="@+id/userNametextView"
-                android:layout_alignStart="@+id/userNametextView"
-                android:layout_marginBottom="41dp"
-                android:text="TextView" />
-
             <ImageView
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/profileTextView"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="42dp"
+                android:layout_marginTop="40dp"
                 app:srcCompat="@drawable/common_full_open_on_phone" />
 
+
+            <TextView
+                android:layout_below="@id/imageView"
+                android:id="@+id/usernameTextView"
+                 android:layout_marginBottom="30dp"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:layout_above="@id/editDetailsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"/>
         </RelativeLayout>
 
         <!-- Bottom navigation -->

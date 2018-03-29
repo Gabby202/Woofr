@@ -44,9 +44,9 @@ public class UsersFragment extends android.support.v4.app.Fragment {
     private ImageView imageView;
     private Uri downloadURI;
     String[] names = new String[10];
-    String[] bios= new String[10];
-    String[] addresses= new String[10];
-    String[] phones= new String[10];
+//    String[] bios= new String[10];
+//    String[] addresses= new String[10];
+//    String[] phones= new String[10];
     String[] userID = new String[10];
     int i;
 
@@ -73,10 +73,10 @@ public class UsersFragment extends android.support.v4.app.Fragment {
             public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
                 Map<String, Object> newPost = (Map<String, Object>) snapshot.getValue();
                 System.out.println("Name: " + newPost.get("name"));
-                textViewName.setText("User " + newPost.get("name"));
-                textViewBio.setText("User " + newPost.get("bio"));
-                textViewAddress.setText("User " + newPost.get("address"));
-                textViewPhone.setText("User " + newPost.get("phone"));
+//                textViewName.setText("User " + newPost.get("name"));
+//                textViewBio.setText("User " + newPost.get("bio"));
+//                textViewAddress.setText("User " + newPost.get("address"));
+//                textViewPhone.setText("User " + newPost.get("phone"));
 
 
 
@@ -110,17 +110,17 @@ public class UsersFragment extends android.support.v4.app.Fragment {
        // String[] users =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         textViewName = (TextView) view.findViewById(R.id.textViewName);
-        textViewBio = (TextView) view.findViewById(R.id.textViewBio);
-        textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
-        textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
+//        textViewBio = (TextView) view.findViewById(R.id.textViewBio);
+//        textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
+//        textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
         imageView =(ImageView) view.findViewById(R.id.image);
-        smsButton = (Button) view.findViewById(R.id.smsButton);
+//        smsButton = (Button) view.findViewById(R.id.smsButton);
 
-        smsButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                sendSMSMessage();
-            }
-        });
+//        smsButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View view) {
+//                sendSMSMessage();
+//            }
+//        });
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -137,11 +137,11 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                 for (DataSnapshot user : usersChildren) {
 
                     names[x]= user.child("name").getValue().toString();
-                    bios[x]=user.child("bio").getValue().toString();
-                    addresses[x]=user.child("address").getValue().toString();
-                    phones[x]=user.child("phone").getValue().toString();
+//                    bios[x]=user.child("bio").getValue().toString();
+//                    addresses[x]=user.child("address").getValue().toString();
+//                    phones[x]=user.child("phone").getValue().toString();
                     userID[x]=user.getKey().toString();
-                    System.out.println(userID[x]);
+//                    System.out.println(userID[x]);
 
                     x++;
                 }
@@ -161,9 +161,9 @@ public class UsersFragment extends android.support.v4.app.Fragment {
 
                 //String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
                 textViewName.setText(names[i-1]);
-                textViewBio.setText(bios[i-1]);
-                textViewAddress.setText(addresses[i-1]);
-                textViewPhone.setText(phones[i-1]);
+//                textViewBio.setText(bios[i-1]);
+//                textViewAddress.setText(addresses[i-1]);
+//                textViewPhone.setText(phones[i-1]);
             }
 
             @Override
@@ -175,13 +175,13 @@ public class UsersFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
-    public void sendSMSMessage() {
-
-            Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
-            smsIntent.addCategory(Intent.CATEGORY_DEFAULT);
-            smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.setData(Uri.parse("sms:" + phones[i-1]));
-
-            startActivity(smsIntent);
-    }
+//    public void sendSMSMessage() {
+//
+//            Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
+//            smsIntent.addCategory(Intent.CATEGORY_DEFAULT);
+//            smsIntent.setType("vnd.android-dir/mms-sms");
+//            smsIntent.setData(Uri.parse("sms:" + phones[i-1]));
+//
+//            startActivity(smsIntent);
+//    }
 }

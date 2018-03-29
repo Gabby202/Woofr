@@ -19,7 +19,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private EditText usernameEditText;
-    private  EditText addressEditText;
+//    private  EditText addressEditText;
     private  Button saveButton;
 
     /*==================== "Main" method ====================================*/
@@ -45,7 +45,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         /*======================= reference layout items with local variabbles =================*/
         usernameEditText = (EditText) findViewById(R.id.userNameEditText);
-        addressEditText = (EditText) findViewById(R.id.addressEditText);
+//        addressEditText = (EditText) findViewById(R.id.addressEditText);
         saveButton = (Button) findViewById(R.id.saveButton);
 
         //set listener on savebutton to call method
@@ -65,7 +65,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void saveUserInformation() {
         //sets local variables to get info typed in text boxes
         String username = usernameEditText.getText().toString().trim();
-        String address = addressEditText.getText().toString().trim();
+//        String address = addressEditText.getText().toString().trim();
 
         //reference java class i made which will store information for the user
         UserInformation userInformation = new UserInformation(username);

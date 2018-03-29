@@ -13,9 +13,11 @@
 
 
         <ImageView
+            android:layout_marginTop="60dp"
+            android:layout_gravity="center"
             android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="210dp" />
+            android:layout_width="200dp"
+            android:layout_height="200dp" />
 
         <Space
             android:layout_width="match_parent"
@@ -34,35 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 
-        <TextView
-            android:id="@+id/textViewBio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textSize="20dp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
-
-        <TextView
-            android:id="@+id/textViewAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textSize="20dp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
-
-        <Button
-            android:id="@+id/smsButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="sms" />
 
         <TextView
             android:id="@+id/textViewPhone"
@@ -71,10 +45,21 @@
             android:text="TextView"
             android:textAlignment="center"
             android:textSize="20dp" />
-
-        <Space
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_alignParentBottom="true"
+                android:id="@+id/smsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:text="sms" />
+        </RelativeLayout>
+
 
     </LinearLayout>
 </LinearLayout>

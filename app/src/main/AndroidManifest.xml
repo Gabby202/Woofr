@@ -47,6 +47,7 @@
         <activity android:name=".MapRedirectActivity" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".HistoryRedirectActivity" />
+        <activity android:name=".ProfileRedirectActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

@@ -7,8 +7,10 @@
     tools:context="com.example.gabby.dogapp.EditUserDetailsActivity"
     android:orientation="vertical"
     android:padding="20sp">
-    
+
     <ImageView
+        android:layout_marginTop="3dp"
+
         android:layout_width="100sp"
         android:layout_height="100sp"
         android:id = "@+id/profileImage"
@@ -35,17 +37,25 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
         android:id= "@+id/chooseImage"
         android:text="Choose Image"/>
 
     <Button
+        android:layout_marginTop="1dp"
         android:layout_width="match_parent"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
         android:layout_height="wrap_content"
         android:id= "@+id/confirm"
         android:text="Confirm"/>
 
     <Button
+        android:layout_marginTop="1dp"
         android:layout_width="match_parent"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
         android:layout_height="wrap_content"
         android:id= "@+id/back"
         android:text="Back"/>

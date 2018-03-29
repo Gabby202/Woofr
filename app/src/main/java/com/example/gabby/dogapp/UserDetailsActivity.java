@@ -64,6 +64,8 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
         finishButton.setOnClickListener(this);
         chooseImageButton = (Button) findViewById(R.id.chooseImageButton);
         chooseImageButton.setOnClickListener(this);
+        uploadImageButton = (Button) findViewById(R.id.uploadImageButton);
+        uploadImageButton.setOnClickListener(this);
         isWalkerRadioButton = (RadioButton) findViewById(R.id.isWalkerRadioButton);
         isNotWalkerRadioButton = (RadioButton) findViewById(R.id.isNotWalkerRadioButton);
 
@@ -166,11 +168,7 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         if(view == finishButton) {
             sendDetails();
-            uploadImage();
-            finish();
-
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-
 
         }
 
@@ -179,7 +177,11 @@ public class UserDetailsActivity extends AppCompatActivity implements View.OnCli
 
         }
 
+        if(view == uploadImageButton) {
+            uploadImage();
+        }
 
         }
+
     }
 

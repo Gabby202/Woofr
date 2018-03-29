@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gabby.dogapp.UserDetailsActivity">
+    tools:context="com.example.gabby.dogapp.UserDetailsActivity"
+    android:padding="20dp">
 
     <EditText
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/registerTextView"
         android:id="@+id/nameEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Full Name"
         android:inputType="textPersonName"
@@ -25,12 +25,11 @@
         app:layout_constraintVertical_bias="0.182" />
 
     <EditText
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/nameEditText"
         android:id="@+id/phoneEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="360dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Phone Number"
@@ -43,18 +42,43 @@
         app:layout_constraintVertical_bias="0.857" />
 
     <Button
+        android:layout_marginTop="30dp"
+        android:id="@+id/chooseImageButton"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:text="Choose image"
+        android:layout_below="@id/phoneEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_marginTop="1dp"
+        android:id="@+id/uploadImageButton"
+        android:layout_below="@id/chooseImageButton"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
+        android:text="Upload"
+        android:textSize="15sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_alignParentBottom="true"
         android:id="@+id/finishButton"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:background="@color/colorAccent"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+
         android:text="Finish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
+        android:layout_centerHorizontal="true"
         android:id="@+id/registerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,24 +94,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/chooseImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="280dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Choose image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.316"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneEditText" />
+
+
+
 
     <RadioGroup
+        android:layout_above="@id/finishButton"
         android:id="@+id/groupRadioGroup"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -114,4 +128,4 @@
             android:text="I want my dog walked" />
     </RadioGroup>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
