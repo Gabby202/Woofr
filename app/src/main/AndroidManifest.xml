@@ -69,7 +69,8 @@
         <activity android:name=".OwnerMapActivity" />
         <activity android:name=".EditUserDetailsActivity" />
         <activity android:name=".HistorySingleActivity" />
-        <activity android:name=".TopWalkersActivity"></activity>
+        <activity android:name=".TopWalkersActivity" />
+        <activity android:name=".NotifsRedirectActivity"></activity>
     </application>
 
 </manifest>

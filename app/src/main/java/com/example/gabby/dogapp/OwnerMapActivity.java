@@ -189,6 +189,20 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
                     walkerRef.updateChildren(map);
 
+
+
+                    DatabaseReference ownerRef = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID);
+                    HashMap map2 = new HashMap();
+
+                    //updates the DB
+                    map2.put("notifications", "Walker found!");
+
+
+                    ownerRef.updateChildren(map2);
+
+
+
+
                     getWalkerLocation();
                     getWalkerInfo();
                     getHasRideEnded();
@@ -388,7 +402,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         statusText.setText("Walker is here! "); //notifies dog owner the walker is here
                     }else {
                         statusText.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
+
                     }
+
 
                 }
             }

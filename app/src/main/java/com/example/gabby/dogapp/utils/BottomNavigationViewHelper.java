@@ -11,6 +11,7 @@ import com.example.gabby.dogapp.BrowseActivity;
 import com.example.gabby.dogapp.HomeActivity;
 import com.example.gabby.dogapp.MapRedirectActivity;
 import com.example.gabby.dogapp.NotifsActivity;
+import com.example.gabby.dogapp.NotifsRedirectActivity;
 import com.example.gabby.dogapp.OwnerMapActivity;
 import com.example.gabby.dogapp.ProfileActivity;
 import com.example.gabby.dogapp.ProfileRedirectActivity;
@@ -55,7 +56,7 @@ public class BottomNavigationViewHelper {
                     case R.id.ic_browse: Intent intent3 = new Intent(context, BrowseActivity.class);
                         context.startActivity(intent3);
                         break;
-                    case R.id.ic_alert: Intent intent4 = new Intent(context, NotifsActivity.class);
+                    case R.id.ic_alert: Intent intent4 = new Intent(context, NotifsRedirectActivity.class);
                         context.startActivity(intent4);
                         break;
                     case R.id.ic_profile: Intent intent5 = new Intent(context, ProfileRedirectActivity.class);

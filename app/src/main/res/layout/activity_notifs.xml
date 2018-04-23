@@ -18,6 +18,16 @@
             android:id="@+id/relLayout1">
 
             <include layout="@layout/layout_top_tabs"/>
+
+            <TextView
+                android:id="@+id/notifTextView"
+                android:layout_width="200sp"
+                android:layout_height="50sp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="Notifications"
+                android:textAlignment="center"
+                android:textSize="32sp" />
         </RelativeLayout>
 
         <!-- middle section (body)-->
@@ -27,18 +37,14 @@
             android:id="@+id/relLayout2"
             android:layout_below="@+id/relLayout1">
 
-            <TextView
-                android:id="@+id/notifTextView"
-                android:layout_width="200sp"
-                android:layout_height="50sp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:text="Notifications"
-                android:textAlignment="center"
-                android:textSize="32sp" />
-
             <include layout="@layout/layout_center_viewpager"/>
+
+            <TextView
+                android:textSize="26sp"
+                android:id="@+id/notifsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20sp"/>
 
         </RelativeLayout>
 
