@@ -36,20 +36,18 @@
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:layout_alignParentBottom="true"
-                android:id="@+id/smsButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:text="sms" />
+
         </RelativeLayout>
 
 

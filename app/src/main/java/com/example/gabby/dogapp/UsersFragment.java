@@ -3,6 +3,7 @@ package com.example.gabby.dogapp;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
+import android.media.Rating;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,16 +37,19 @@ import com.google.firebase.storage.StorageReference;
 
 
 public class UsersFragment extends android.support.v4.app.Fragment {
-    TextView textViewName;
+    TextView textViewName, textViewRating;
     private Button smsButton;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private ImageView imageView;
+    private RatingBar ratingBar;
     private Uri downloadURI;
+    private float rating = 4;
     String[] names = new String[10];
-//    String[] bios= new String[10];
+    Float[] ratingAvgArray = new Float [10];
+    //    String[] bios= new String[10];
 //    String[] addresses= new String[10];
 //    String[] phones= new String[10];
     String[] userID = new String[10];
@@ -63,6 +68,7 @@ public class UsersFragment extends android.support.v4.app.Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance();
+
 
 
 
@@ -110,10 +116,12 @@ public class UsersFragment extends android.support.v4.app.Fragment {
        // String[] users =  {"Alex", "Maria", "Sophie", "Laura", "Stacey", "Noelle"};
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         textViewName = (TextView) view.findViewById(R.id.textViewName);
+//        textViewRating = (TextView) view.findViewById(R.id.textViewRating);
 //        textViewBio = (TextView) view.findViewById(R.id.textViewBio);
 //        textViewAddress = (TextView) view.findViewById(R.id.textViewAddress);
 //        textViewPhone = (TextView) view.findViewById(R.id.textViewPhone);
         imageView =(ImageView) view.findViewById(R.id.image);
+        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
 //        smsButton = (Button) view.findViewById(R.id.smsButton);
 
 //        smsButton.setOnClickListener(new View.OnClickListener() {
@@ -147,13 +155,12 @@ public class UsersFragment extends android.support.v4.app.Fragment {
 
                     if(ratingsTotal != 0) {
                         ratingAvg = ratingSum / ratingsTotal;
+                        ratingAvgArray[x] = ratingAvg;
+
                         if(ratingAvg >= 4) {
+                            System.out.println(ratingAvg + "");
                             names[x] = user.child("name").getValue().toString();
-                            //                    bios[x]=user.child("bio").getValue().toString();
-                            //                    addresses[x]=user.child("address").getValue().toString();
-                            //                    phones[x]=user.child("phone").getValue().toString();
                             userID[x] = user.getKey().toString();
-                            //                    System.out.println(userID[x]);
 
 
                             storageReference = FirebaseStorage.getInstance().getReference();
@@ -169,11 +176,11 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                                 }
                             });
 
-                            //String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
                             textViewName.setText(names[i-1]);
-//                textViewBio.setText(bios[i-1]);
-//                textViewAddress.setText(addresses[i-1]);
-//                textViewPhone.setText(phones[i-1]);
+//                            textViewRating.setText(ratingAvgArray[i-1] + "");
+                            if(ratingAvgArray[i-1] != null) {
+                                ratingBar.setRating(ratingAvgArray[i - 1]);
+                            }
 
                             x++;
                         }
