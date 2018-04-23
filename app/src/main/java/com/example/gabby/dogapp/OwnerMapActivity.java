@@ -288,6 +288,13 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                       ratingBar.setRating(ratingAvg);
                     }
 
+                    /*if(ratingAvg >= 4.5){
+                        DatabaseReference topWalkerRef = FirebaseDatabase.getInstance().getReference().child("topWalkers");
+                        HashMap map = new HashMap();
+                        map.put("rating", ratingAvg);
+                        topWalkerRef.child(walkerFoundID).updateChildren(map);
+                    }
+
                    /* Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
                     if(map.get("name") != null){
                         name = map.get("name").toString();

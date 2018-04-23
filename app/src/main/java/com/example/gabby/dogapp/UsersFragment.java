@@ -35,7 +35,7 @@ import com.google.firebase.storage.StorageReference;
 
 
 public class UsersFragment extends android.support.v4.app.Fragment {
-    TextView textViewName, textViewBio, textViewAddress, textViewPhone;
+    TextView textViewName;
     private Button smsButton;
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
@@ -130,40 +130,57 @@ public class UsersFragment extends android.support.v4.app.Fragment {
         String message = Integer.toString(bundle.getInt("count"));
         i = bundle.getInt("count");
 
+
+
                 DataSnapshot usersSnapshot = dataSnapshot.child("users/walkers");
                 Iterable<DataSnapshot> usersChildren = usersSnapshot.getChildren();
 
                 int x = 0;
                 for (DataSnapshot user : usersChildren) {
-
-                    names[x]= user.child("name").getValue().toString();
-//                    bios[x]=user.child("bio").getValue().toString();
-//                    addresses[x]=user.child("address").getValue().toString();
-//                    phones[x]=user.child("phone").getValue().toString();
-                    userID[x]=user.getKey().toString();
-//                    System.out.println(userID[x]);
-
-                    x++;
-                }
-
-                storageReference = FirebaseStorage.getInstance().getReference();
-                storageReference.child("images/"+userID[i-1]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(getContext()).load(uri).into(imageView);
+                    int ratingSum = 0;
+                    float ratingsTotal = 0;
+                    float ratingAvg = 0;
+                    for(DataSnapshot child: user.child("rating").getChildren()){
+                        ratingSum = ratingSum + Integer.valueOf(child.getValue().toString());
+                        ratingsTotal++;
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                    }
-                });
 
-                //String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
-                textViewName.setText(names[i-1]);
+                    if(ratingsTotal != 0) {
+                        ratingAvg = ratingSum / ratingsTotal;
+                        if(ratingAvg >= 4) {
+                            names[x] = user.child("name").getValue().toString();
+                            //                    bios[x]=user.child("bio").getValue().toString();
+                            //                    addresses[x]=user.child("address").getValue().toString();
+                            //                    phones[x]=user.child("phone").getValue().toString();
+                            userID[x] = user.getKey().toString();
+                            //                    System.out.println(userID[x]);
+
+
+                            storageReference = FirebaseStorage.getInstance().getReference();
+                            storageReference.child("images/"+userID[i-1]).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Glide.with(getContext()).load(uri).into(imageView);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });
+
+                            //String url = "https://firebasestorage.googleapis.com/v0/b/dogapp-8bfb0.appspot.com/o/images%2F2aeb4292-fa3a-45be-a1e6-b7628132bf01?alt=media&token=cce7c8c8-f67e-4360-8b79-f8c7b177a2a8";
+                            textViewName.setText(names[i-1]);
 //                textViewBio.setText(bios[i-1]);
 //                textViewAddress.setText(addresses[i-1]);
 //                textViewPhone.setText(phones[i-1]);
+
+                            x++;
+                        }
+                    }
+                }
+
+
             }
 
             @Override

@@ -23,7 +23,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".onAppKilled" android:stopWithTask="false" />
+        <service
+            android:name=".onAppKilled"
+            android:stopWithTask="false" />
+
         <activity android:name=".RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,7 +68,8 @@
             android:label="@string/title_activity_walker_map" />
         <activity android:name=".OwnerMapActivity" />
         <activity android:name=".EditUserDetailsActivity" />
-        <activity android:name=".HistorySingleActivity"></activity>
+        <activity android:name=".HistorySingleActivity" />
+        <activity android:name=".TopWalkersActivity"></activity>
     </application>
 
 </manifest>
