@@ -3,7 +3,6 @@ package com.example.gabby.dogapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,8 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import static com.google.android.gms.internal.zzs.TAG;
 
 /**
  * Created by Agata on 18/03/2018.
@@ -43,18 +40,38 @@ public class MapRedirectActivity extends AppCompatActivity {
         userID = user.getUid();
 
 
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.child("users").child("walkers").hasChild(userID)) {
+                    isWalker();
+                }else {
+                    isOwner();
+                }
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
 
     public void isWalker(){
         finish();
-        startActivity(new Intent(this, WalkerMapActivity.class));
+        Intent intent = new Intent(getApplicationContext(), WalkerMapActivity.class);
+        intent.putExtra("ownerOrWalker", "walker");
+        System.out.println("NAVIGATING TO MAP AS WALKER =================== ");
+        startActivity(intent);
     }
 
     public void isOwner(){
         finish();
-        startActivity(new Intent(this, OwnerMapActivity.class));
+        Intent intent = new Intent(getApplicationContext(), OwnerMapActivity.class);
+        intent.putExtra("ownerOrWalker", "owner");
+        System.out.println("NAVIGATING TO MAP AS OWNER =================== ");
+        startActivity(intent);
     }
 }
