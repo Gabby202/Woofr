@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.widget.Toast.LENGTH_LONG;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button loginButton;
@@ -108,9 +110,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         progressDialog.dismiss();
-                        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        System.out.println("USER: " + userId + " IS THE CURRENT USER LOGGIN IN ===================");
+
                         if(task.isSuccessful()) {
+                            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            System.out.println("USER: " + userId + " IS THE CURRENT USER LOGGIN IN ===================");
 //                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(userId);
 //                            ref.addValueEventListener(new ValueEventListener() {
 //                                @Override
@@ -137,6 +140,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
                             finish();
+
+                        }else{
+                            return;
                         }
                     }
                 });

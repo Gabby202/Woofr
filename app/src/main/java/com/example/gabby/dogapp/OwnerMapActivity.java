@@ -190,15 +190,15 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     walkerRef.updateChildren(map);
 
 
-//
-//                    DatabaseReference ownerRef = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID);
-//                    HashMap map2 = new HashMap();
-//
-//                    //updates the DB
-//                    map2.put("notifications", "Walker found!");
-//
-//
-//                    ownerRef.updateChildren(map2);
+
+                    DatabaseReference ownerRef = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID);
+                    HashMap map2 = new HashMap();
+
+                    //updates the DB
+                    map2.put("notifications", "Walker found!");
+
+
+                    ownerRef.updateChildren(map2);
 
 
 
