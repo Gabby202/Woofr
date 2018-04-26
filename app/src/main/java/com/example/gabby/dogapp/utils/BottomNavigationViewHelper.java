@@ -42,6 +42,10 @@ public class BottomNavigationViewHelper {
         bottomNavigationViewEx.setTextVisibility(false);
     }
 
+    /**
+     * handles the navigation bar, opens a new activity based on the choice made
+     */
+
     public static void enableNavigation(final Context context, BottomNavigationViewEx view) {
         view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

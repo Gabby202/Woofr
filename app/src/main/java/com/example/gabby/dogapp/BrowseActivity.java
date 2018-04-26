@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import com.example.gabby.dogapp.utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+/**
+ * browseActivity allows the swipe adapter to work for top rated users
+ */
+
 public class BrowseActivity extends FragmentActivity {
     private static final String TAG="BrowseActivity";
     private static final int ACTIVITY_NUMBER = 1;

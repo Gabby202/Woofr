@@ -13,7 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.security.Provider;
 
 /**
- * Created by Agata on 28/03/2018.
+ * Handles disconnecting from the database if the app is killed
  */
 
 public class onAppKilled extends Service{

@@ -15,7 +15,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 /**
- * Created by Agata on 18/03/2018.
+ * Used to redirect user to correct map
  */
 
 public class MapRedirectActivity extends AppCompatActivity {
@@ -58,7 +58,9 @@ public class MapRedirectActivity extends AppCompatActivity {
 
 
     }
-
+    /**
+     * these functions are used to display the correct map based on user account type
+     */
     public void isWalker(){
         finish();
         Intent intent = new Intent(getApplicationContext(), WalkerMapActivity.class);

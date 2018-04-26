@@ -11,7 +11,7 @@ import com.example.gabby.dogapp.R;
 import java.util.List;
 
 /**
- * Created by Gabby on 3/26/2018.
+ * An adapter used to display the transaction history to the user
  */
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolders> {

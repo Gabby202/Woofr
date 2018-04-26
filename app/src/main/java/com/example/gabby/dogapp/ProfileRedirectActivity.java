@@ -15,7 +15,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 /**
- * Created by Agata on 18/03/2018.
+ * this activity is used to determine if the user is a
+ * walker or an owner and this is passed to the profileActivity
  */
 
 public class ProfileRedirectActivity extends AppCompatActivity {

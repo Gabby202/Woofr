@@ -47,13 +47,14 @@ public class UsersFragment extends android.support.v4.app.Fragment {
     private RatingBar ratingBar;
     private Uri downloadURI;
     private float rating = 4;
-    String[] names = new String[10];
-    Float[] ratingAvgArray = new Float [10];
+    String[] names = new String[100];
+    Float[] ratingAvgArray = new Float [100];
     //    String[] bios= new String[10];
 //    String[] addresses= new String[10];
 //    String[] phones= new String[10];
-    String[] userID = new String[10];
+    String[] userID = new String[100];
     int i;
+    int totalUser;
 
     public UsersFragment() {
         // Required empty public constructor
@@ -144,6 +145,8 @@ public class UsersFragment extends android.support.v4.app.Fragment {
                 Iterable<DataSnapshot> usersChildren = usersSnapshot.getChildren();
 
                 int x = 0;
+
+
                 for (DataSnapshot user : usersChildren) {
                     int ratingSum = 0;
                     float ratingsTotal = 0;

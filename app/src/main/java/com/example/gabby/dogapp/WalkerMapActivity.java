@@ -200,7 +200,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         getAssignedOwnerDestination();
                         getAssignedOwnerInfo();
 
-                    awaitReq.setText("Owner Found!");
+                    awaitReq.setText("Owner Found!"); //If owner is found, a message will be displayed to user
 
                 }else{
                     endRide();
@@ -253,6 +253,9 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
+    /**
+     * gets asigned owner's information so that it can be displayed to the walker
+     */
     public void getAssignedOwnerInfo(){
         ownerInfo.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("owners").child(ownerID);
@@ -311,6 +314,10 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     Marker pickupMarker;
     private DatabaseReference assignedWalkerPickupLocationRef;
     private ValueEventListener assignedOwnerPickupLocationRefListener;
+
+    /**
+     * gets the assigned owner's pick up location
+     */
     private void getAssignedOwnerPickupLocation(){
         assignedWalkerPickupLocationRef = FirebaseDatabase.getInstance().getReference().child("ownerRequest").child(ownerID).child("l"); //the child l is used by location services to store long and lang values
         assignedOwnerPickupLocationRefListener = assignedWalkerPickupLocationRef.addValueEventListener(new ValueEventListener() {

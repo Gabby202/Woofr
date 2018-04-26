@@ -83,7 +83,9 @@ public class HistoryActivity extends AppCompatActivity {
         //sets text of textview to this, gets user email and appends to string
 //        welcomeTextView.setText("Welcome " + user.getEmail().toString().trim());
     }
-
+    /**
+     * this function is used to retrieve the transaction ID's from database
+     */
     private void getUserHistoryIds() {
         DatabaseReference userHistoryDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(ownerOrWalker + "s").child(userId).child("history");
         userHistoryDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,7 +93,7 @@ public class HistoryActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     for(DataSnapshot history : dataSnapshot.getChildren()) {
-                        FetchRideInformation(history.getKey());
+                        FetchWalkInformation(history.getKey());
                     }
                 }
             }
@@ -103,7 +105,10 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    private void FetchRideInformation(String walkKey) {
+    /**
+     * this function is used to retrieve the walk's information from the database
+     */
+    private void FetchWalkInformation(String walkKey) {
         DatabaseReference historyDatabase = FirebaseDatabase.getInstance().getReference().child("history").child(walkKey);
         historyDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -131,6 +136,9 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * this function is used to get the current date, used for timestamp
+     */
     private String getDate(Long timestamp) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.setTimeInMillis(timestamp*1000);
