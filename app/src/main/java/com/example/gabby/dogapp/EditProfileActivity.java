@@ -65,13 +65,13 @@ public class EditProfileActivity extends AppCompatActivity {
     private void saveUserInformation() {
         //sets local variables to get info typed in text boxes
         String username = usernameEditText.getText().toString().trim();
-//        String address = addressEditText.getText().toString().trim();
 
-        //reference java class i made which will store information for the user
+        //reference java class which will store information for the user
         UserInformation userInformation = new UserInformation(username);
         //get current user logged in
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        //get unique id for user, and set the variables inside the object made above as children to it
+        //get unique id for user, and set the variables
+        // inside the object made above as children to it
         databaseReference.child(user.getUid()).setValue(userInformation);
         //success popup
         Toast.makeText(this, "Information Saved!", Toast.LENGTH_LONG).show();

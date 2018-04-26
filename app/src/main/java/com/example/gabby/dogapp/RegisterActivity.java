@@ -91,7 +91,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         //create local variables to set text to
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
-
         //shows popup (Toast) if no info is entered
         if(TextUtils.isEmpty(email)) {
             //email is empty
@@ -99,42 +98,37 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             //stopping the function executing further
             return;
         }
-
         if(TextUtils.isEmpty(password)) {
             //password is empty
             Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show();
             return;
         }
-
         //if validations are ok
         //show progressbar
         progressDialog.setMessage("Registering User...");
         progressDialog.show();
 
-        //firebase auth method to send email and password to database (pre made method)
+        //Firebase auth method to send email and password to database
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        //if successful interaction with database, close this activity and start profile
+                        //if successful interaction with database,
+                        // close this activity and start profile
                         if(task.isSuccessful()) {
                             //start profile activity
                             finish();
                             startActivity(new Intent(getApplicationContext(), UserDetailsActivity.class));
-
                         }else {
-
                             //else display popup
-                            Toast.makeText(RegisterActivity.this, "Could not register... Please try again", Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(RegisterActivity.this, "Could not register... " +
+                                            "Please try again", Toast.LENGTH_SHORT).show();
                         }
-
                         //close spinning progress thing
                         progressDialog.dismiss();
                     }
                 });
-
 
     }
 

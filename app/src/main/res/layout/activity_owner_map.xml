@@ -63,13 +63,14 @@
                 android:layout_height="100sp"
                 android:id = "@+id/walkerProfileImage"
                 android:padding="20sp"
-                android:src= "@mipmap/ic_person_black_24dp"/>
+                android:src= "@mipmap/ic_person_black_24dp"
+                />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="40sp">
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -91,7 +92,8 @@
                     android:id="@+id/ratingBar"
                     android:layout_gravity="center"
                     android:numStars="5"
-                    android:stepSize="0.1"/>
+                    android:stepSize="0.1"
+                    />
             </LinearLayout>
         </LinearLayout>
 

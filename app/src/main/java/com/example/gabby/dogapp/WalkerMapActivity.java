@@ -331,8 +331,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     pickupLatLng = new LatLng(locationLat, locationLng);
-                   pickupMarker =  mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
-                    //pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
+                    pickupMarker =  mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
                     getRouteToMarker(pickupLatLng);
                 }
 
@@ -419,23 +418,21 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             GeoFire geoFireAvailable = new GeoFire(refAvailable);
             GeoFire geoFireWorking = new GeoFire(refWorking);
 
-
             switch (ownerID) {
                 case "":
                     geoFireWorking.removeLocation(userId);
-                    geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
-
+                    geoFireAvailable.setLocation(userId
+                            , new GeoLocation(location.getLatitude()
+                            , location.getLongitude()));
                     break;
                 default:
                     geoFireAvailable.removeLocation(userId);
-                    geoFireWorking.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
-
-
+                    geoFireWorking.setLocation(userId
+                            , new GeoLocation(location.getLatitude()
+                            , location.getLongitude()));
                     break;
-
             }
         }
-
     }
 
 

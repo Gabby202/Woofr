@@ -122,6 +122,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 //            });
         }
 
+        if(v == topRatedButton) {
+            startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
+        }
+
         //TODO topRatedButton
     }
 }
