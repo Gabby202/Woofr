@@ -1,6 +1,5 @@
 package com.example.gabby.dogapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -51,8 +50,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import android.Manifest;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -66,16 +63,16 @@ import java.util.List;
 
 public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     GoogleApiClient googleApiClient;
-    Location lastLocation;
-    LocationRequest locationRequest;
+    Location locationLast;
+    LocationRequest locationReq;
     LocationManager locationManager;
-    String provider;
-    private Button requestButton, statusText;
+    String dataProvider;
+    private Button reqWalkerButton, statusButtonText;
     private LatLng pickupLocation, destinationLatLng;
-    private boolean requestBol = false;
-    private Marker pickupMarker;
+    private boolean reqBoolean = false;
+    private Marker pickupLocationMarker;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReference();
@@ -103,32 +100,32 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerProfileImage = (ImageView) findViewById(R.id.walkerProfileImage);
         walkerNameField = (TextView) findViewById(R.id.walkerName);
         walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
-        statusText = (Button) findViewById(R.id.statusText);
+        statusButtonText = (Button) findViewById(R.id.statusText);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         destinationLatLng = new LatLng(0.0,0.0);
 
-        requestButton = (Button) findViewById(R.id.requestButton);
-        requestButton.setOnClickListener(new View.OnClickListener() {
+        reqWalkerButton = (Button) findViewById(R.id.requestButton);
+        reqWalkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v == requestButton) {
-                    if(requestBol){
+                if (v == reqWalkerButton) {
+                    if(reqBoolean){
                         endRide();
                     }else {
 
-                        requestBol = true;
+                        reqBoolean = true;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
                         GeoFire geoFire = new GeoFire(ref);
-                        geoFire.setLocation(userId, new GeoLocation(lastLocation.getLatitude(), lastLocation.getLongitude()));
-                        pickupLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                        pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
+                        geoFire.setLocation(userId, new GeoLocation(locationLast.getLatitude(), locationLast.getLongitude()));
+                        pickupLocation = new LatLng(locationLast.getLatitude(), locationLast.getLongitude());
+                        pickupLocationMarker = googleMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
 
 
-                        statusText.setText("Finding a walker...");
-                        requestButton.setText("Cancel");
+                        statusButtonText.setText("Finding a walker...");
+                        reqWalkerButton.setText("Cancel");
                         getClostestWalkerAvailable();
 
                     }
@@ -137,7 +134,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         });
 
 
-        provider = locationManager.getBestProvider(new Criteria(), false);
+        dataProvider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -172,7 +169,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             //if walker found within radius, this method is called,
             // key is walkers's key in db and location is their location using long and lat
             public void onKeyEntered(String key, GeoLocation location)  {
-                if(!walkerFound && requestBol){
+                if(!walkerFound && reqBoolean){
                     walkerFound = true;
                     walkerFoundID = key;
 
@@ -205,8 +202,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     getWalkerLocation();
                     getWalkerInfo();
                     getHasRideEnded();
-                    statusText.setText("Finding a walker...");
-                    requestButton.setText("Cancel");
+                    statusButtonText.setText("Finding a walker...");
+                    reqWalkerButton.setText("Cancel");
                 }
 
 
@@ -232,11 +229,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     } else {
 
                         Toast.makeText(OwnerMapActivity.this, "No walkers found...Please try again", Toast.LENGTH_LONG).show();
-                        if (pickupMarker != null) {
-                            pickupMarker.remove();
+                        if (pickupLocationMarker != null) {
+                            pickupLocationMarker.remove();
                         }
-                        requestButton.setText("Request walker");
-                        requestBol = false;
+                        reqWalkerButton.setText("Request walker");
+                        reqBoolean = false;
                         radius = 1;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("ownerRequest");
@@ -364,12 +361,12 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerLocationListener = walkerLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists() && requestBol){
+                if(dataSnapshot.exists() && reqBoolean){
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double LocationLat = 0;
                     double LocationLng = 0;
 
-                    statusText.setText("Walker Found!");
+                    statusButtonText.setText("Walker Found!");
 
                     if(map.get(0) != null){
                         LocationLat = Double.parseDouble(map.get(0).toString());
@@ -383,7 +380,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     if(walkerMarker != null){ //app will crash without this if because it will try to delete something that is not there
                         walkerMarker.remove();
                     }
-                    mMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
+                    googleMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
 
 
 
@@ -398,9 +395,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     float distance = loc1.distanceTo(loc2); //finds distance between the two locations
 
                     if(distance < 100){
-                        statusText.setText("Walker is here! "); //notifies dog owner the walker is here
+                        statusButtonText.setText("Walker is here! "); //notifies dog owner the walker is here
                     }else {
-                        statusText.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
+                        statusButtonText.setText("Walker Found! " + String.valueOf(distance)); //shows distance between walker and owner using distance variable
 
                     }
 
@@ -428,13 +425,13 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
+        this.googleMap.setMyLocationEnabled(true);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -450,11 +447,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     //called every second (or whatever its set to)
     @Override
     public void onLocationChanged(Location location) {
-        lastLocation = location;
+        locationLast = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         //move camera at same pace as user moving
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
     }
 
@@ -464,11 +461,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         //create request to get location each second
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
+        locationReq = new LocationRequest();
+        locationReq.setInterval(1000);
+        locationReq.setFastestInterval(1000);
         //accuracy can be changed to save battery/resources
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -485,7 +482,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         }
 
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationReq, this);
     }
 
     @Override
@@ -559,7 +556,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        locationManager.requestLocationUpdates(provider, 400, 1, (LocationListener) this);
+                        locationManager.requestLocationUpdates(dataProvider, 400, 1, (LocationListener) this);
                     }
 
                 } else {
@@ -584,7 +581,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     private void endRide () {
-        requestBol = false;
+        reqBoolean = false;
         geoQuery.removeAllListeners();
         walkerLocationRef.removeEventListener(walkerLocationListener);
         walkHasEndedRef.removeEventListener(walkHasEndedRefListener);
@@ -602,10 +599,10 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         geoFire.removeLocation(userId);
 
         //if marker doesn't exist the app may crash
-        if (pickupMarker != null) {
-            pickupMarker.remove();
+        if (pickupLocationMarker != null) {
+            pickupLocationMarker.remove();
         }
-        requestButton.setText("Request walker");
+        reqWalkerButton.setText("Request walker");
 
         walkerInfo.setVisibility(View.GONE);
         walkerNameField.setText("");

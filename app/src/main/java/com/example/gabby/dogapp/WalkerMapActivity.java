@@ -1,12 +1,10 @@
 package com.example.gabby.dogapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -54,7 +52,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import android.Manifest;
-import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -62,7 +59,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -72,15 +68,15 @@ import java.util.Map;
 
 public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RoutingListener {
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     GoogleApiClient googleApiClient;
-    Location lastLocation;
-    LocationRequest locationRequest;
+    Location locationLast;
+    LocationRequest locationReq;
     LocationManager locationManager;
-    String provider;
+    String dataProvider;
     private Button cancelButton, walkStatus;
     private String ownerID = "";
-    private LatLng pickupLatLng;
+    private LatLng pickupLocationLatLng;
 
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReference();
@@ -90,11 +86,11 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     private String name;
     private String phone;
     private Button awaitReq;
-    private List<Polyline> polylines;
+    private List<Polyline> plyLines;
     private static final int[] COLORS = new int[]{R.color.colorAccent};
     private int status = 0;
     private String destination;
-    private LatLng destinationLatLng;
+    private LatLng destAdressLatLng;
 
     private Switch workingSwitch;
 
@@ -105,7 +101,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        polylines = new ArrayList<>();
+        plyLines = new ArrayList<>();
         mapFragment.getMapAsync(this);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -154,8 +150,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                     case 1: //walker on way to pickup dog
                         status = 2;
                         erasePolyLines();
-                        if(destinationLatLng.latitude != 0.0 && destinationLatLng.longitude != 0.0) {
-                            getRouteToMarker(destinationLatLng);
+                        if(destAdressLatLng.latitude != 0.0 && destAdressLatLng.longitude != 0.0) {
+                            getRouteToMarker(destAdressLatLng);
                         }
                         walkStatus.setText("Walk Completed");
                         break;
@@ -187,7 +183,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
         getAssignedOwner();
 
-        provider = locationManager.getBestProvider(new Criteria(), false);
+        dataProvider = locationManager.getBestProvider(new Criteria(), false);
         checkLocationPermission();
     }
 
@@ -243,7 +239,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                     }
                     if(map.get("destinationLng") != null) {
                         destinationLng = Double.valueOf(map.get("destinationLng").toString());
-                        destinationLatLng = new LatLng(destinationLat, destinationLng);
+                        destAdressLatLng = new LatLng(destinationLat, destinationLng);
                     }
 
                 }
@@ -330,9 +326,9 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                     if(map.get(1) != null) {
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
-                    pickupLatLng = new LatLng(locationLat, locationLng);
-                    pickupMarker =  mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
-                    getRouteToMarker(pickupLatLng);
+                    pickupLocationLatLng = new LatLng(locationLat, locationLng);
+                    pickupMarker =  googleMap.addMarker(new MarkerOptions().position(pickupLocationLatLng).title("Pickup Location"));
+                    getRouteToMarker(pickupLocationLatLng);
                 }
 
                 }
@@ -352,7 +348,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
                 .alternativeRoutes(false)
-                .waypoints(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), pickupLatLng)
+                .waypoints(new LatLng(locationLast.getLatitude(), locationLast.getLongitude()), pickupLatLng)
                 .build();
         routing.execute();
     }
@@ -377,13 +373,13 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         buildGoogleApiClient();
-        mMap.setMyLocationEnabled(true);
+        this.googleMap.setMyLocationEnabled(true);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -402,12 +398,12 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
         if(getApplicationContext() !=null){
 
-            lastLocation = location;
+            locationLast = location;
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             //move camera at same pace as user moving
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             //set value from 1 - 21
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             System.out.println("THIS USER ID " + userId.toString());
@@ -441,11 +437,11 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         //create request to get location each second
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
+        locationReq = new LocationRequest();
+        locationReq.setInterval(1000);
+        locationReq.setFastestInterval(1000);
         //accuracy can be changed to save battery/resources
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationReq.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 
     }
@@ -476,7 +472,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             return;
         }
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationReq, this);
     }
 
     private void disconnectWalker(){
@@ -548,7 +544,7 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
                             == PackageManager.PERMISSION_GRANTED) {
 
                         //Request location updates:
-                        locationManager.requestLocationUpdates(provider, 400, 1, (LocationListener) this);
+                        locationManager.requestLocationUpdates(dataProvider, 400, 1, (LocationListener) this);
                     }
 
                 } else {
@@ -582,13 +578,13 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        if(polylines.size()>0) {
-            for (Polyline poly : polylines) {
+        if(plyLines.size()>0) {
+            for (Polyline poly : plyLines) {
                 poly.remove();
             }
         }
 
-        polylines = new ArrayList<>();
+        plyLines = new ArrayList<>();
         //add route(s) to the map.
         for (int i = 0; i <route.size(); i++) {
 
@@ -599,8 +595,8 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
             polyOptions.color(getResources().getColor(COLORS[colorIndex]));
             polyOptions.width(10 + i * 3);
             polyOptions.addAll(route.get(i).getPoints());
-            Polyline polyline = mMap.addPolyline(polyOptions);
-            polylines.add(polyline);
+            Polyline polyline = googleMap.addPolyline(polyOptions);
+            plyLines.add(polyline);
 
             Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
         }
@@ -611,10 +607,10 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
 
     }
     private void erasePolyLines() {
-        for(Polyline line : polylines) {
+        for(Polyline line : plyLines) {
             line.remove();
         }
-        polylines.clear();
+        plyLines.clear();
     }
 
     private void endRide () {
@@ -661,11 +657,11 @@ public class WalkerMapActivity extends FragmentActivity implements OnMapReadyCal
         map.put("rating", 0);
         map.put("timestamp", getCurrentTimestamp());
         map.put("destination", destination);
-        map.put("location/from/lat", pickupLatLng.latitude); //creates child within child, like a path
-        map.put("location/from/lng", pickupLatLng.longitude);
+        map.put("location/from/lat", pickupLocationLatLng.latitude); //creates child within child, like a path
+        map.put("location/from/lng", pickupLocationLatLng.longitude);
 
-        map.put("location/to/lat", destinationLatLng.latitude);
-        map.put("location/to/lng", destinationLatLng.longitude);
+        map.put("location/to/lat", destAdressLatLng.latitude);
+        map.put("location/to/lng", destAdressLatLng.longitude);
         historyRef.child(requestId).updateChildren(map);
 
     }

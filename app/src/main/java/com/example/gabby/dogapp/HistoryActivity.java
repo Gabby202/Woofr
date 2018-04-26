@@ -6,15 +6,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
-import android.text.method.SingleLineTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.gabby.dogapp.historyRecyclerView.HistoryAdapter;
 import com.example.gabby.dogapp.historyRecyclerView.HistoryObject;
-import com.example.gabby.dogapp.historyRecyclerView.HistoryViewHolders;
 import com.example.gabby.dogapp.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,7 +24,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -36,7 +32,7 @@ public class HistoryActivity extends AppCompatActivity {
     private static final String TAG = "HistoryActivity";
     //========================== Firebase stuff ===========================================
     private FirebaseAuth firebaseAuth;
-    private RecyclerView historyRecyclerView;
+    private RecyclerView recyclerView;
     private RecyclerView.Adapter historyAdapter;
     private RecyclerView.LayoutManager historyLayoutManager;
     private String ownerOrWalker, userId, whoIsLoggedIn;
@@ -66,13 +62,13 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
 
-        historyRecyclerView = (RecyclerView) findViewById(R.id.historyRecyclerView);
-        historyRecyclerView.setNestedScrollingEnabled(false);
-        historyRecyclerView.setHasFixedSize(true);
+        recyclerView = (RecyclerView) findViewById(R.id.historyRecyclerView);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
         historyLayoutManager = new LinearLayoutManager(HistoryActivity.this);
-        historyRecyclerView.setLayoutManager(historyLayoutManager);
+        recyclerView.setLayoutManager(historyLayoutManager);
         historyAdapter = new HistoryAdapter(getDataSetHistory(), HistoryActivity.this);
-        historyRecyclerView.setAdapter(historyAdapter);
+        recyclerView.setAdapter(historyAdapter);
 
         ownerOrWalker = getIntent().getExtras().getString("ownerOrWalker");
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();

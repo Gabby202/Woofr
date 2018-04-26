@@ -50,7 +50,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     private DatabaseReference historyWalkInfoDb;
     private StorageReference storageReference;
 
-    private LatLng destinationLatLng, pickupLatLng;
+    private LatLng destLatLng, pickUpLatLng;
 
     private String walkId, currentUserId, ownerId, walkerId, userOwnerOrWalker;
 
@@ -60,26 +60,26 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     private TextView userName;
     private TextView userPhone;
 
-    private RatingBar ratingBar;
+    private RatingBar rateBar;
 
     private ImageView userImage;
 
-    private List<Polyline> polylines;
+    private List<Polyline> plyLines;
     private static final int[] COLORS = new int[]{R.color.colorAccent};
 
     private GoogleMap mMap;
-    private SupportMapFragment mMapFragment;
+    private SupportMapFragment mapFrafment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_single);
-        polylines = new ArrayList<>();
+        plyLines = new ArrayList<>();
 
         walkId = getIntent().getExtras().getString("walkId");
 
-        mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.getMapAsync(this);
+        mapFrafment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFrafment.getMapAsync(this);
 
         walkLocation = (TextView) findViewById(R.id.walkLocation);
         walkDistance = (TextView) findViewById(R.id.walkDistance);
@@ -89,7 +89,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
 
         userImage = (ImageView) findViewById(R.id.userImage);
 
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        rateBar = (RatingBar) findViewById(R.id.ratingBar);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -129,7 +129,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                         }
 
                         if(child.getKey().equals("rating")) {
-                            ratingBar.setRating(Integer.valueOf(child.getValue().toString()));
+                            rateBar.setRating(Integer.valueOf(child.getValue().toString()));
                         }
 
                         if(child.getKey().equals("destination")) {
@@ -137,9 +137,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                         }
 
                         if(child.getKey().equals("location")) {
-                            pickupLatLng = new LatLng(Double.valueOf(child.child("from").child("lat").getValue().toString()), Double.valueOf(child.child("from").child("lng").getValue().toString()));
-                            destinationLatLng = new LatLng(Double.valueOf(child.child("to").child("lat").getValue().toString()), Double.valueOf(child.child("to").child("lng").getValue().toString()));
-                            if(destinationLatLng != new LatLng(0,0)) {
+                            pickUpLatLng = new LatLng(Double.valueOf(child.child("from").child("lat").getValue().toString()), Double.valueOf(child.child("from").child("lng").getValue().toString()));
+                            destLatLng = new LatLng(Double.valueOf(child.child("to").child("lat").getValue().toString()), Double.valueOf(child.child("to").child("lng").getValue().toString()));
+                            if(destLatLng != new LatLng(0,0)) {
                                 getRouteToMarker();
                             }
                         }
@@ -156,8 +156,8 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     }
 
     private void displayOwnerRelatedObjects() {
-        ratingBar.setVisibility(View.VISIBLE);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        rateBar.setVisibility(View.VISIBLE);
+        rateBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 historyWalkInfoDb.child("rating").setValue(rating);
@@ -215,7 +215,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
                 .alternativeRoutes(false)
-                .waypoints(pickupLatLng, destinationLatLng)
+                .waypoints(pickUpLatLng, destLatLng)
                 .build();
         routing.execute();
     }
@@ -244,8 +244,8 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(pickupLatLng);
-        builder.include(destinationLatLng);
+        builder.include(pickUpLatLng);
+        builder.include(destLatLng);
         LatLngBounds bounds = builder.build();
 
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -255,16 +255,16 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
 
         mMap.animateCamera(cameraUpdate);
 
-        mMap.addMarker(new MarkerOptions().position(pickupLatLng).title("Pickup Location"));
-        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination"));
+        mMap.addMarker(new MarkerOptions().position(pickUpLatLng).title("Pickup Location"));
+        mMap.addMarker(new MarkerOptions().position(destLatLng).title("Destination"));
 
-        if(polylines.size()>0) {
-            for (Polyline poly : polylines) {
+        if(plyLines.size()>0) {
+            for (Polyline poly : plyLines) {
                 poly.remove();
             }
         }
 
-        polylines = new ArrayList<>();
+        plyLines = new ArrayList<>();
         //add route(s) to the map.
         for (int i = 0; i <route.size(); i++) {
 
@@ -276,7 +276,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
             polyOptions.width(10 + i * 3);
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = mMap.addPolyline(polyOptions);
-            polylines.add(polyline);
+            plyLines.add(polyline);
 
             Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
         }
@@ -287,9 +287,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
 
     }
     private void erasePolyLines() {
-        for(Polyline line : polylines) {
+        for(Polyline line : plyLines) {
             line.remove();
         }
-        polylines.clear();
+        plyLines.clear();
     }
 }
