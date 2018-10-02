@@ -105,17 +105,20 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerNameField = (TextView) findViewById(R.id.walkerName);
         walkerPhoneField = (TextView) findViewById(R.id.walkerPhone);
         statusButtonText = (Button) findViewById(R.id.statusText);
+        statusButtonText.setText("Type the address of your local park below");
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         destinationLatLng = new LatLng(0.0,0.0);
 
         reqWalkerButton = (Button) findViewById(R.id.requestButton);
+        reqWalkerButton.setVisibility(View.INVISIBLE);
         reqWalkerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == reqWalkerButton) {
                     if(reqBoolean){
                         endRide();
-                    }else {
+                    }else if(destination != null) {
+
 
                         reqBoolean = true;
                         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -125,13 +128,15 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         GeoFire geoFire = new GeoFire(ref);
                         geoFire.setLocation(userId, new GeoLocation(locationLast.getLatitude(), locationLast.getLongitude()));
                         pickupLocation = new LatLng(locationLast.getLatitude(), locationLast.getLongitude());
-                        pickupLocationMarker = googleMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
+//                        pickupLocationMarker = googleMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
 
 
                         statusButtonText.setText("Finding a walker..."); //sets the button's text to let owner know walker is being looked for
                         reqWalkerButton.setText("Cancel");
                         getClostestWalkerAvailable();
 
+                    } else {
+                        Toast.makeText(OwnerMapActivity.this, "Please select the place you want your dog walked to", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -149,6 +154,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
             public void onPlaceSelected(Place place) {
                 destination = place.getName().toString();
                 destinationLatLng = place.getLatLng();
+                reqWalkerButton.setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -238,6 +245,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     } else {
 
                         Toast.makeText(OwnerMapActivity.this, "No walkers found...Please try again", Toast.LENGTH_LONG).show();
+                        statusButtonText.setText("Type the name of your locak park below");
                         if (pickupLocationMarker != null) {
                             pickupLocationMarker.remove();
                         }
@@ -396,6 +404,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                     if(walkerMarker != null){ //app will crash without this if because it will try to delete something that is not there
                         walkerMarker.remove();
                     }
+                    googleMap.clear();
                     googleMap.addMarker((new MarkerOptions().position(walkerLatLng).title("Your Walker")));
 
 
@@ -460,14 +469,21 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         googleApiClient.connect();
     }
 
+    private boolean oriented = false;
     //called every second (or whatever its set to)
     @Override
     public void onLocationChanged(Location location) {
         locationLast = location;
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         //move camera at same pace as user moving
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+
+        //stop map from re-orientating. allows user to zoom in and move camera around
+        if(!oriented){
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            oriented = true;
+        }
 
     }
 
@@ -477,6 +493,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         //create request to get location each second
+
         locationReq = new LocationRequest();
         locationReq.setInterval(1000);
         locationReq.setFastestInterval(1000);
@@ -627,6 +644,8 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         walkerNameField.setText("");
         walkerPhoneField.setText("");
         walkerProfileImage.setImageResource(R.mipmap.ic_person_black_24dp);
+        statusButtonText.setText("Type the name of your local park below");
+
         finish();
         startActivity(new Intent(this, HomeActivity.class));
     }
