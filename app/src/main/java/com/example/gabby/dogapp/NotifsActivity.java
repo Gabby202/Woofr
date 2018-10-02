@@ -41,11 +41,11 @@ public class NotifsActivity extends AppCompatActivity {
         notifsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println("In the data snapshot lol xD ");
-                //if(dataSnapshot.child("notifications").exists()) {
+                System.out.println("In the data snapshot ");
+                if(dataSnapshot.child("notifications").exists()) {
                     System.out.println("Notification: " + dataSnapshot.child("notifications").getValue().toString());
                     notifsTextView.setText(dataSnapshot.child("notifications").getValue().toString());
-                //}
+                }
             }
 
             @Override
