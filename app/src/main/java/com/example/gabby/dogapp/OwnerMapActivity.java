@@ -61,6 +61,10 @@ import android.widget.Toast;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * this class handles everything to do with the owner's map
+ */
+
 public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCallback, com.google.android.gms.location.LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap googleMap;
@@ -124,7 +128,7 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
                         pickupLocationMarker = googleMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here"));
 
 
-                        statusButtonText.setText("Finding a walker...");
+                        statusButtonText.setText("Finding a walker..."); //sets the button's text to let owner know walker is being looked for
                         reqWalkerButton.setText("Cancel");
                         getClostestWalkerAvailable();
 
@@ -158,6 +162,11 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private String walkerFoundID;
 
     GeoQuery geoQuery;
+
+    /**
+     *  this gets the details of the found walker and stores the data in the database, moving the walker
+     *  to the walkersWorking category
+     */
     private void getClostestWalkerAvailable(){
         DatabaseReference walkerLocation = FirebaseDatabase.getInstance().getReference().child("walkersAvailable");
 
@@ -253,6 +262,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
+    /**
+     *gets the walker's information so that it can be displayed to the owner
+     */
     public void getWalkerInfo(){
         walkerInfo.setVisibility(View.VISIBLE);
         final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child("walkers").child(walkerFoundID);
@@ -356,6 +368,10 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
     private DatabaseReference walkerLocationRef;
     private ValueEventListener walkerLocationListener;
     //gets the location of the walker once they have been requested
+
+    /**
+     * gets the walker's location
+     */
     private void getWalkerLocation(){
         walkerLocationRef = FirebaseDatabase.getInstance().getReference().child("walkersWorking").child(walkerFoundID).child("l"); //the child l is used by location services to store long and lang values
         walkerLocationListener = walkerLocationRef.addValueEventListener(new ValueEventListener() {
@@ -580,6 +596,9 @@ public class OwnerMapActivity extends FragmentActivity implements OnMapReadyCall
         geoFire.removeLocation(userId);
     }
 
+    /**
+     * handles creating a transaction history and resetting the map so that another walker can be searched for
+     */
     private void endRide () {
         reqBoolean = false;
         geoQuery.removeAllListeners();

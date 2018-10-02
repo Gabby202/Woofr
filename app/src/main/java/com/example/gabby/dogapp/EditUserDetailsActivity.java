@@ -124,6 +124,9 @@ public class EditUserDetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * this function is used to display the current user's info from the database
+     */
     public void getUserInfo(){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -177,6 +180,9 @@ public class EditUserDetailsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * this function is used to save the current user's info from the database if it is changed
+     */
     public void saveUserInformation() {
         String name = nameField.getText().toString().trim();
         String phone = phoneField.getText().toString().trim();
@@ -211,6 +217,9 @@ public class EditUserDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * this function handles image uploading
+     */
     private void uploadImage() {
 
         if(filePath != null)

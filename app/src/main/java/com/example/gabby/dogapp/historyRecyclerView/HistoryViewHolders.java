@@ -22,6 +22,10 @@ public class HistoryViewHolders extends RecyclerView.ViewHolder implements View.
         time = (TextView) itemView.findViewById(R.id.time);
     }
 
+
+    /**
+     * handles screen click, displays the details for chosen transaction
+     */
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(v.getContext(), HistorySingleActivity.class);

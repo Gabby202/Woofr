@@ -97,6 +97,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         getWalkInformation();
     }
 
+    /**
+     * this function is used to get the walk info from the database
+     */
     private void getWalkInformation() {
         historyWalkInfoDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -167,6 +170,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         });
     }
 
+    /**
+     * this function is used to get the owner's info from the database
+     */
     private void getOwnerInformation(String otherUserWalkerOrOwner, final String otherUserId) {
         DatabaseReference otherUserDb = FirebaseDatabase.getInstance().getReference().child("users").child(otherUserWalkerOrOwner).child(otherUserId);
         otherUserDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,6 +208,10 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         });
     }
 
+    /**
+     * this function is used to get the current date needed for the timestamp
+     */
+
     private String getDate(Long timestamp) {
         Calendar cal = Calendar.getInstance(Locale.getDefault());
         cal.setTimeInMillis(timestamp*1000);
@@ -210,6 +220,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         return date;
     }
 
+    /**
+     * this function is used to draw the route between two points on the map
+     */
     private void getRouteToMarker() {
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
@@ -239,6 +252,10 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     public void onRoutingStart() {
 
     }
+
+    /**
+     * this function is used to draw the route between two points on the map
+     */
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
@@ -282,6 +299,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
+    /**
+     * this function is used to erase the route between two points on the map if the request is cancelled
+     */
     @Override
     public void onRoutingCancelled() {
 

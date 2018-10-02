@@ -59,6 +59,10 @@ public class NotifsRedirectActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * these functions load the correct notifications based on the account type
+     */
+
     public void isWalker(){
         finish();
         Intent intent = new Intent(getApplicationContext(), NotifsActivity.class);

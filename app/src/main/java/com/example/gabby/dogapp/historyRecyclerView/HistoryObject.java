@@ -1,9 +1,8 @@
 package com.example.gabby.dogapp.historyRecyclerView;
 
 /**
- * Created by Gabby on 3/26/2018.
+ * walk transaction history object
  */
-
 public class HistoryObject {
     private String walkId;
     private String time;

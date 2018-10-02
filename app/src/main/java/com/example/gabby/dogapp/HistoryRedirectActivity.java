@@ -15,7 +15,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 /**
- * Created by Agata on 18/03/2018.
+ * this function is used to redirect user to correct history
  */
 
 public class HistoryRedirectActivity extends AppCompatActivity {
@@ -58,6 +58,10 @@ public class HistoryRedirectActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     * these functions load the correct walk history based on the account type
+     */
 
     public void isWalker(){
         finish();
